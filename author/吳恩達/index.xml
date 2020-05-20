@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>吳恩達 | Tao Wu</title>
+    <link>/author/%E5%90%B3%E6%81%A9%E9%81%94/</link>
+      <atom:link href="/author/%E5%90%B3%E6%81%A9%E9%81%94/index.xml" rel="self" type="application/rss+xml" />
+    <description>吳恩達</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Tao Wu</copyright><lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/author/%E5%90%B3%E6%81%A9%E9%81%94/avatar_hu52a603635ecebd45650b162dadabb4e5_12861_270x270_fill_q90_lanczos_center.jpg</url>
+      <title>吳恩達</title>
+      <link>/author/%E5%90%B3%E6%81%A9%E9%81%94/</link>
+    </image>
+    
+    <item>
+      <title>Academic: the website builder for Hugo</title>
+      <link>/post/getting-started/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/getting-started/</guid>
+      <description>&lt;p&gt;Variational Autoencoder (VAE) can be seen as a stochastic version of conventional autoencoder which imposes some constraints on the distribution of latent variables, however, the original VAE was derived from Variational Bayesian method and linked to Autoencoder just because some terms in objective function can be interpreted as an encoder and a decoder.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first derive VAE from scratch and then we see how to implement it in Tensorflow.&lt;/p&gt;
+&lt;p&gt;As a kind of generative model, VAE aims to learn the underlying distribution of dataset which is unknown to us and maybe very complex. A common &amp;lsquo;distance&amp;rsquo; measure of two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which is defined to be&lt;/p&gt;
+&lt;p&gt;$$
+\mathcal { D } _ { \mathrm { KL } } [ p ( x ) || q ( x ) ] = \mathbb { E } _ { p ( x ) } \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
+$$&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: the KL divergence is not symmetrical, we will explore their difference in later blogs&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] &amp;amp; = \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\                       &amp;amp; = - H , [ q (x) ] - \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Note that $q(x)$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $q(x)$ is a constant, so&lt;/p&gt;
+&lt;p&gt;$$
+\min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] = \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
+$$&lt;/p&gt;
+&lt;p&gt;See what? &lt;strong&gt;Minimize the KL divergence of the data distribution and model distribution is equivalent to maximum likelihood method.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;VAE is a latent variable generative model which learns the distribution of data space $x \in \mathcal { X }$ from a latent space $z \in \mathcal { Z }$, we can define a prior of latent space $p(z)$, which is usually a standard normal distribution, then we can model the data distribution with a complex conditional distribution $p _ { \theta } ( x | z )$, so the model data likelihood can be computed as&lt;/p&gt;
+&lt;p&gt;$$p _ { \theta } ( x ) = \int _ { z } p _ { \theta } ( x | z ) p ( z ) \mathrm { d } z$$&lt;/p&gt;
+&lt;p&gt;However, direct maximization of the likelihood is intractable because the intergration. VAE instead optimizes a lower bound of $p _ { \theta } ( x )$, we can derive it using Jenson&amp;rsquo;s Inequality:&lt;/p&gt;
+&lt;p&gt;If $f$ is a convex function and $X$ is a random variable, then&lt;/p&gt;
+&lt;p&gt;$$
+E f ( X ) \geq f ( E X )
+$$&lt;/p&gt;
+&lt;p&gt;the equality holds only when $X = E X$, i.e,&lt;/p&gt;
+&lt;p&gt;In our case,&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\log p _ {\theta} ( x ) &amp;amp; = \log \int _ { z } p _ { \theta } ( x , z ) \mathrm { d } z  \\  &amp;amp; = \log \int _ { z } q _ { \phi } ( z | x )  [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \mathrm { d } z \\ &amp;amp; = \log \mathbb { E } _ { q _ { \phi } ( z | x) } [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \\ &amp;amp; \geq \mathbb { E } _ { q _ { \phi } ( z | x) } \log [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The last line of the derivation is called the &lt;strong&gt;Evidence Lower BOund (ELBO)&lt;/strong&gt;, which is used frequently in Variational Inference. It seems confusing what is $q _ { \phi } ( z | x)$? Actually it is an approximate distribution of true posterior $p _ {\theta} ( z | x)$ of latent variable $z$ given datapoint $x$. Let&amp;rsquo;s see where it comes from.&lt;/p&gt;
+&lt;p&gt;Maybe you have heard of VAE is a generative model, actually it is an instance of Variational Inference family, it is used to perform inference of the data in the first place. Given a raw datapoint $x$, how to learn its representations $z$ like shape, size, category, etc. The posterior of latent variables $p _ { \theta } ( z  | x  ) = p _ { \theta  } ( x  |  z  ) p ( z  ) / p _ { \theta } ( x )$ is also intractable because $p _ { \theta } ( x )$ is intractable as we have discussed. VAE introduced a recognition model $q _ { \phi } (z|x)$ to approximate the true postrior $p _ { \theta } ( z | x )$. Similarly, we aims to minimize the KL divergence between them:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( z | x ) \right] \\                       &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( x | z ) - \log  p ( z ) \right] + \log p _ { \theta } ( x )  \\                                                                                        &amp;amp; = - \mathrm { ELBO } + \log p _ { \theta } ( x )
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;$\log p _ { \theta } (x)$ out of expectation because it does not depend on $z$, rearranging thte equation we obtain&lt;/p&gt;
+&lt;p&gt;$$
+\mathrm { ELBO } = \log p _ { \theta } (x) - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ]
+$$&lt;/p&gt;
+&lt;p&gt;Surprise! We get the same objective, maximize the ELBO is equavalent to minimize the KL divergence between $q _ { \phi } ( z | x )$ and $p _ {\theta} ( z | x )$ and at the same time maximize $\log p _ { \theta } (x)$.&lt;/p&gt;
+&lt;p&gt;So, all the remaining is to maxmize the ELBO, which is tractable under some weak assumptions, let&amp;rsquo;s see how to deal with it.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathrm { ELBO } &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) + \log  p ( z ) - \log q _ { \phi } ( z | x ) \right] \\     &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) \right] - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The first term on RHS is actually the reconstruction error, which is MSE for real value data or cross-entropy for binary value data. The second term is the KL divergence of approximate posterior and prior of latent variables $z$, which can be computed analytically. From the objective function we can see two things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;What is  $q _ { \phi } ( z | x )$, given $x$, compute the distribution of $z$; what is $p _ {\theta} ( x | z )$, given $z$, compute the distribution of $x$, if both are implemented by neural network, then they are the encoder and decoder of an Autoencoder, respectively. Now, get the name?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why VAE can generate new data while conventional Autoencoders fail: The first term in the objective is the same as convetional Autoencoder if implemented deterministically, the secret is the second term, VAE forces the mapping from data to latent variables to be as close as a prior, so any time we sample a latent variable from the prior, the decoder knows what to generate, while conventional Autoencoder distribute the latent varibles randomly, there are many gaps between them, if we sample a latent variable from the gap and feed to decoder, the decoder has no idea of it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Before we implemented VAE, there are still several thing to do.&lt;/p&gt;
+&lt;p&gt;Firstly we have a glance of how to compute the $\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]$ term. we assume the prior of $z$ is standard Gaussian, $p ( z ) = \mathcal { N } ( 0 , \mathbf { I } )$, this is suitable when implemented VAE by neural networks, because whatever the true prior is, the decoder network can transform the standard Gaussian to it at some layer. So our approximate posterior $q _ { \phi } ( z | x )$ will also take a Guassian distribution form $ \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) $, and the parameters $\boldsymbol { \mu }$ and $\boldsymbol { \sigma }$ is computed by encoder. We compute $\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]$ using just simple calculus:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log q _ { \phi } ( z | x ) -  \log  p ( z ) \right] \\  &amp;amp; = \int \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) [\log \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) - \log \mathcal { N } ( z ; \mathbf { 0 } , \mathbf { I } )] d \mathbf { z }  \\  &amp;amp; = \frac { 1 } { 2 } \sum _ { j = 1 } ^ { J } \left( - \log \left( \left( \sigma _ { j } \right) ^ { 2 } \right) + \left( \mu _ { j } \right) ^ { 2 } + \left( \sigma _ { j } \right) ^ { 2 } - 1 \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where J id the dimension of vectors $z$, $\mu _ { j } $ and $\sigma _ { j } $ denote the $j$-th element of mean and variance of $z$, respectively.&lt;/p&gt;
+&lt;p&gt;We can see the ELBO contains encoder parameters $\phi$ and decoder parameters $\theta$. The gradient with respect to $\theta$ is easy to compute:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \theta } \mathrm {ELBO}  &amp;amp; =  \nabla _ { \theta } \mathbb { E } _ { q _ {\phi} (z | x)}  \log p _ { \theta } ( x | z) \\   &amp;amp; =  \mathbb { E } _ { q _ {\phi} (z | x)} [ \nabla _ { \theta }  \log p _ { \theta } ( x | z) ]  \\  &amp;amp; \simeq  \frac { 1 } { L } \sum _ { l = 1 } ^ { L } [ \nabla _ { \theta }  \log p _ { \theta } ( x | z ^ { ( l ) }) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;the last line comes from Monte Carlo estimation, where $ z  ^ { ( l ) } \sim q _ { \phi } \left( z | x \right)$&lt;/p&gt;
+&lt;p&gt;However, the gradient with respect to $\phi$ need specical handling because common gradient estimator like score function estimator exhibits exhibits very high variance thus impractical.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \phi } \mathbb { E } _ { q _ { \phi } ( z ) } [ f ( z ) ]  &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z  ) } \left[ f ( z ) \nabla _ { \phi } \log q _ { \phi } ( z ) \right]  \\     &amp;amp; \simeq \frac { 1 } { L } \sum _ { l = 1 } ^ { L } [ f ( z ) \nabla _ { \phi } \log q _ { \phi } \left( z ^ { ( l ) } \right) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;VAE uses a &amp;lsquo;&lt;strong&gt;reparameterization trick&lt;/strong&gt;&amp;rsquo; to derive an unbiased gradient estimator. Instead of sampling $ z \sim q _ { \phi } \left( z | x \right)$ directly, it reparameterize the random variable $\widetilde { z } \sim q _ { \phi } ( z | x )$ using a differentiable transformation $g _ { \phi } (  \epsilon , x )$ with an auxiliary noise variable $\epsilon$.&lt;/p&gt;
+&lt;p&gt;$$
+\widetilde {  z } = g _ { \phi } ( \epsilon , x ) \quad \text { with } \quad \epsilon  \sim p ( \epsilon  )
+$$&lt;/p&gt;
+&lt;p&gt;In the univariate Gaussian case, $z \sim \mathcal { N } \left( \mu , \sigma ^ { 2 } \right)$, we can sample $\epsilon \sim \mathcal { N } ( 0,1 )$ and then use the transformation $z = \mu + \sigma \epsilon$.&lt;/p&gt;
+&lt;p&gt;In this way, we can compute the gradient with respect to $\phi$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \phi } \mathrm {ELBO}  &amp;amp; =  \nabla _ { \phi }  \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) \right] - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]   \\   &amp;amp; =  \frac { 1 } { L } \sum _ { l = 1 } ^ { L } \left( \log p _ { \boldsymbol { \theta } } \left( x |  z  ^ {  (l)  } \right) \right) - D _ { K L } \left( q _ { \phi } \left( z  | x \right) || p ( z ) \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where $ z  ^ {  (l)  } \sim g _ { \phi } \left( x , \epsilon ^ { ( l ) } \right) = \mu  +  \sigma \odot  \epsilon  ^ { ( l ) } \text { where }  \epsilon  ^ { ( l ) } \sim \mathcal { N } ( \mathbf { 0 } , \mathbf { I } ) $&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;There are several important estimators in machine learning area, we will explore that in later blog.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All right, everything is done, the following codes snippets will help to understand the theory discussed above.&lt;/p&gt;
+&lt;p&gt;First implement encoder network, taking data $x$ as input, output is the mean and standard deviation of $ q _ {\phi} (z | x)$&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def encoder(self, x, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;encoder&#39;, reuse=reuse):
+        # 1st convolutional layer
+        conv1 = tf.layers.conv2d(inputs=x, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lr_conv1 = tf.nn.leaky_relu(conv1)
+        #2nd convolutional layer
+        conv2 = tf.layers.conv2d(inputs=lr_conv1, filters=128, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lr_conv2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training = is_training))
+        # flatten the convolutional layer
+        flat = tf.layers.flatten(lr_conv2)
+        #flat = tf.reshape(lr_conv2, [self.batch_size, -1])
+        # 1st fully-connected layer
+        fc1 = tf.layers.dense(flat, units=1024)
+        lr_fc1 = tf.nn.leaky_relu(tf.layers.batch_normalization(fc1, training = is_training))
+        # output layer
+        out = tf.layers.dense(lr_fc1, units=2*self.z_dim)
+        # The mean parameter is unconstrained
+        mean = out[:, :self.z_dim]
+        # The standard deviation must be positive. Parametrize with a softplus and
+        # add a small epsilon for numerical stability
+        stddev = 1e-6 + tf.nn.softplus(out[:, self.z_dim:])
+        return mean, stddev
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then implement the decoder network, taking latent variables $z$ as input, output the Bernoulli parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def decoder(self, z, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;decoder&#39;, reuse=reuse):
+        # 1st fully-connected layer
+        fc1 = tf.layers.dense(z, units=1024)
+        r_fc1 = tf.nn.relu(tf.layers.batch_normalization(fc1, training=is_training))
+        # 2nd fully-connected layer
+        fc2 = tf.layers.dense(r_fc1, units=8 * 8 * 128)
+        r_fc2 = tf.nn.relu(tf.layers.batch_normalization(fc2, training=is_training))
+        # reshape the fully-connected layer
+        deflat = tf.reshape(r_fc2, [-1, 8, 8, 128])
+        # 1st deconvolutional layer
+        deconv1 = tf.layers.conv2d_transpose(inputs=deflat, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        r_deconv1 = tf.nn.relu(tf.layers.batch_normalization(deconv1, training=is_training))
+        # output layer
+        deconv_out = tf.layers.conv2d_transpose(inputs=r_deconv1, filters=1, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        out = tf.nn.sigmoid(deconv_out)
+        return out
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can see how reparameteration trick works and how to implement the objective.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def build_model(self):
+    # placeholder
+    self.input_x = tf.placeholder(dtype = tf.float32, shape = [None] + self.image_dim, name = &#39;input_x&#39;)
+    self.input_z = tf.placeholder(dtype = tf.float32, shape = [None, self.z_dim], name = &#39;input_z&#39;)
+    # encoding 
+    mu, sigma = self.encoder(self.input_x, is_training = True, reuse = False)
+    # reparameterize
+    z = mu + sigma * tf.random_normal(tf.shape(mu), 0, 1, dtype = tf.float32)
+    # decoding 
+    outputs = self.decoder(z, is_training = True, reuse = False)
+    self.outputs = tf.clip_by_value(outputs, 1e-8, 1 - 1e-8)
+    # loss 
+    self.nll = -tf.reduce_mean(tf.reduce_sum(self.input_x * tf.log(self.outputs) 
+        + (1 - self.input_x) * tf.log(1 - self.outputs), [1, 2]))
+    self.KL_div = tf.reduce_mean(0.5 * tf.reduce_sum(tf.square(mu) + tf.square(sigma) 
+        - tf.log(1e-8 + tf.square(sigma)) - 1, [1]))
+    ELBO = -(self.nll + self.KL_div)
+    self.loss = -ELBO
+    # optimizer
+    t_vars = tf.trainable_variables()
+    with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+        self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss, var_list = t_vars)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The full codes can be seen at &lt;a href=&#34;https://git.mst.edu/acil-group/tf_vae_collection/blob/master/models/VAE.py&#34;&gt;https://git.mst.edu/acil-group/tf_vae_collection/blob/master/models/VAE.py&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/abs/1312.6114&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Kingma, Diederik P., and Max Welling. &amp;ldquo;Auto-encoding variational bayes.&amp;rdquo; arXiv preprint arXiv:1312.6114 (2013).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/abs/1606.05908&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Doersch, Carl. &amp;ldquo;Tutorial on variational autoencoders.&amp;rdquo; arXiv preprint arXiv:1606.05908 (2016).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;em&gt;Banner image source: 
+&lt;a href=&#34;https://towardsdatascience.com/what-the-heck-are-vae-gans-17b86023588a&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://towardsdatascience.com/what-the-heck-are-vae-gans-17b86023588a&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
