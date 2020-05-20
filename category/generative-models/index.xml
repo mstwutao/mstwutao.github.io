@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>generative-models | Tao Wu</title>
+    <link>/category/generative-models/</link>
+      <atom:link href="/category/generative-models/index.xml" rel="self" type="application/rss+xml" />
+    <description>generative-models</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2018-2020 Tao Wu</copyright><lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>generative-models</title>
+      <link>/category/generative-models/</link>
+    </image>
+    
+    <item>
+      <title>Generative Adversarial Networks</title>
+      <link>/post/gan/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/gan/</guid>
+      <description>&lt;p&gt;Generative Adversarial Networks(GAN) [1] has become one of the most powerful techniques in machine learning since its emergence in 2014. The interesting idea of training methods and the flexible design of the objective function make GAN have numerous variants, and these variants even consist of a 
+&lt;a href=&#34;https://deephunt.in/the-gan-zoo-79597dc8c347&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GAN zoo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first interpret GAN from perspectives and then see how to implement GAN in Tensorflow:&lt;/p&gt;
+&lt;h2 id=&#34;game-theory&#34;&gt;Game Theory&lt;/h2&gt;
+&lt;p&gt;GAN consists of two models: a generative model $G$ that tries to generate realistic samples, and a discriminative model $D$ that tries to classify data from both $G$ and dataset. The training procedure for $G$ is to maximize the probability of $D$ making a mistake, and $D$ is to maximize the probability of correctly classify all samples it receives. This framework corresponds to a minimax two-player game, the generative model can be thought of as analogous to a team of counterfeiters, trying to produce fake currency and use it without detection, while the discriminative model is analogous to the police, trying to detect the counterfeit currency. Competition in this game drives both teams to improve their methods until the counterfeits are indistiguishable from the genuine articles.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s formulate GAN in mathematics now. Both $G : Z \rightarrow X$ and $D : X \rightarrow [0, 1]$ are represented by neural networks, like other common generative models, $G$ takes vectors of noise $z \sim p(z)$ as input, the output $G(z)$ are the fake samples with the same size as data from dataset, $D$ recieves samples from both dataset and $G$, and it outputs the probability of the samples it receives are whether real or fake.&lt;/p&gt;
+&lt;p&gt;Hence, the objective of $D$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(D) = \max , \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The objective of $G$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(G) &amp;amp; = \max , \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log (D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min , \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min , \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Equation (4) holds because $\mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ]$ does not depend on $G$, so we can write the objective of GAN as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } \max _ { D } V ( D , G ) =  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;divergence-minimization&#34;&gt;Divergence Minimization&lt;/h2&gt;
+&lt;p&gt;As a generative model, $G$ tries to capture the true data distribution, hence it seeks to minimize a kind of divergence between the model distribution $p _ { g }$ and data distribution $p _ { \mathrm { data } }$. But how can $G$ achieve it?&lt;/p&gt;
+&lt;p&gt;The training process of GAN is to train $G$ and $D$ in turn, when training $G$ we keep $D$ fixed and vice versa, before the training converges, what is the optimal $D$ for a fixed $G$?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\max _ { D } V ( D , G ) &amp;amp; = \max \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) d x + \int _ { \boldsymbol { z } } p  ( \boldsymbol { z } ) \log ( 1 - D ( g ( \boldsymbol { z } ) ) ) d z \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) + p _ { g } ( \boldsymbol { x } ) \log ( 1 - D ( \boldsymbol { x } ) ) d x
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Using simple calculus, we know function $ a \log ( y ) + b \log ( 1 - y )$ achieves its maximum in $[0, 1]$ at $\frac { a } { a + b }$, hence the optimal $D$ is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D  ^ { * } ( \boldsymbol { x } ) = \frac { p _ { \text {data} } ( \boldsymbol { x } ) } { p _ { \text {data} } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) }
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;If at every step, we train $D$ to the optimum, then what will the objective of $G$ like?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } V ( D , G ) &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { z } \sim p (z)} \left[ \log \left( 1 - D  ^ { * } ( G ( \boldsymbol { z } ) ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \left( 1 - D ^ { * } ( \boldsymbol { x } ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } )} \left[ \log \frac { p _ { \text { data } } ( \boldsymbol { x } ) } { P _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \frac { p _ { g } ( \boldsymbol { x } ) } { p _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; = - \log ( 4 ) + K L \left( p _ { \text { data } } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) + K L \left( p _ { g } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) \\ &amp;amp; = - \log ( 4 ) + 2 \cdot J S D \left( p _ { \text { data } } || p _ { g } \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Now we can see that $G$ is minimizing the Jensen– Shannon divergence between the model’s distribution and the true data distribution. All right, let&amp;rsquo;s see the Tensorflow implementation of GAN to better understand the theory discussed above. The implementation is based on Deep Convolutional GAN (DCGAN) because the original GAN&amp;rsquo;s training is very instable.&lt;/p&gt;
+&lt;h2 id=&#34;tensorflow-implementation&#34;&gt;Tensorflow implementation&lt;/h2&gt;
+&lt;p&gt;The generator part, it takes a vector of $z$ as input, output an fake image sample.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def generator(self, z, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;generator&#39;, reuse=reuse):
+        z = tf.reshape(z, [-1, 1, 1, self.config.z_dim])
+        # 1st hidden layer
+        conv1 = tf.layers.conv2d_transpose(z, 1024, [4, 4], strides=(1, 1), padding=&#39;valid&#39;)
+        lrelu1 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv1, training=is_training), 0.2)
+    
+        # 2nd hidden layer
+        conv2 = tf.layers.conv2d_transpose(lrelu1, 512, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training=is_training), 0.2)
+    
+        # 3rd hidden layer
+        conv3 = tf.layers.conv2d_transpose(lrelu2, 256, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu3 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv3, training=is_training), 0.2)
+    
+        # output layer
+        conv4 = tf.layers.conv2d_transpose(lrelu3, self.image_dim[-1], [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        out = tf.nn.sigmoid(conv4)
+
+        return out
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The discriminator receive an image, outputs the probability that image is real.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def discriminator(self, x, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;discriminator&#39;, reuse=reuse):
+        # 1st hidden layer
+        conv1 = tf.layers.conv2d(x, 128, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu1 = tf.nn.leaky_relu(conv1, 0.2)
+    
+        # 2nd hidden layer
+        conv2 = tf.layers.conv2d(lrelu1, 256, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training=is_training), 0.2)
+    
+        # 3rd hidden layer
+        conv3 = tf.layers.conv2d(lrelu2, 512, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu3 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv3, training=is_training), 0.2)
+    
+        # output layer
+        logits = tf.layers.conv2d(lrelu3, 1, [4, 4], strides=(1, 1), padding=&#39;valid&#39;)
+        out = tf.nn.sigmoid(logits)
+    
+        return out, logits
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The loss for both networks are pretty self-explainatory.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def build_model(self):
+    # placeholder
+    self.input_x = tf.placeholder(dtype=tf.float32, shape=[None] + self.image_dim, name=&#39;input_x&#39;)
+    self.input_z = tf.placeholder(dtype=tf.float32, shape=[None, self.config.z_dim], name=&#39;input_z&#39;)
+
+    # generate fake data
+    self.g_fake = self.generator(self.input_z) 
+
+    # discrinminate real and fake data
+    self.d_real, self.d_real_logits = self.discriminator(self.input_x)
+    self.d_fake, self.d_fake_logits = self.discriminator(self.g_fake, reuse=True)
+
+    # testing generated images
+    self.generated_images = self.generator(self.input_z, is_training=False, reuse=True)
+
+    # loss
+    with tf.variable_scope(&amp;quot;loss&amp;quot;):
+        # loss for each network
+        d_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_real_logits, labels=tf.ones_like(self.d_real_logits)))
+        d_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_fake_logits, labels=tf.zeros_like(self.d_fake_logits)))
+        self.d_loss = d_loss_real + d_loss_fake
+        self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_fake_logits, labels=tf.ones_like(self.d_fake_logits)))
+    
+        # optimizer
+    with tf.variable_scope(&amp;quot;optimizer&amp;quot;):
+        t_vars = tf.trainable_variables()
+        d_vars = [var for var in t_vars if var.name.startswith(&#39;discriminator&#39;)]
+        g_vars = [var for var in t_vars if var.name.startswith(&#39;generator&#39;)]
+
+        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+            self.d_optim = tf.train.AdamOptimizer(self.config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=d_vars)
+            self.g_optim = tf.train.AdamOptimizer(self.config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=g_vars)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Goodfellow, Ian, et al. &amp;ldquo;Generative adversarial nets.&amp;rdquo; Advances in neural information processing systems. 2014.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1809.02145.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jolicoeur-Martineau, Alexia. &amp;ldquo;GANs beyond divergence minimization.&amp;rdquo; arXiv preprint arXiv:1809.02145 (2018).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Training generative models as divergence minimization</title>
+      <link>/post/divergence/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/divergence/</guid>
+      <description>&lt;p&gt;Generative models can be used for data compression, denoising, inpainting, image synthesis, semi-supervised learning, unsupervised representation learning, and other tasks. There are many kinds of generative models, and among which GAN, VAE and autoregressive models are the most popular ones. A great blog on 
+&lt;a href=&#34;https://openai.com/blog/generative-models/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Generative Models&lt;/a&gt; written by OpenAI is worth reading at length. In this blog, we mainly discuss generative models from a divergence minimization perspective.&lt;/p&gt;
+&lt;p&gt;Generative models, as its name explains, it can be used to generate data, the prerequisite is to understand the training dataset, i.e, learn the distribution of the dataset. In order to match model distribution $p _ { \theta } (x)$ to the true data distribution $q(x)$, generative models usually estimate a discrepancy (sometimes we call it distance, divergence)  measure $ d(p _ { \theta } (x), q(x))$ and optimize the model parameters $\theta$ to minimize this discrepancy. However we don&amp;rsquo;t have access to the underlying true data distribution, we only have samples from it (the dataset), so we use this empirical distribution as a surrogate for true data distribution. The wish is that if the model is correct, and for extremely large amounts of data, the model distribution will recover the true data distribution.&lt;/p&gt;
+&lt;p&gt;There are many concepts of measuring the discrapency between two distributions, in practice, we have only finite data from the dataset and follow some tractable assumptions about the distribution, hence there is often a mismatch between the data distribution and the model distribution, and different discrapency minimization can lead to very different results. Following [1], these discrepancy measures can be casted into three categories: information-theoretic divergences, integral probability metrics, and Hilbert space discrepancy metrics. Now we have a closer look at how to estimate these different measures and what different results we get.&lt;/p&gt;
+&lt;p&gt;*Note: Divergences are a weak form of distance between two probability distributions with the two properties:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Non-negative&lt;/li&gt;
+&lt;li&gt;Equal to zero if and only if the distributions are equal.
+we do not require them to be symmetric and follow triangle inequality.*&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;information-theoretic-divergences&#34;&gt;Information-theoretic divergences&lt;/h2&gt;
+&lt;p&gt;In this part, we mainly consider Information-theoretic divergences, f-divergence family, which contains some often used divergence like Kullback-Leibler (KL) divergence and Jensen-Shannon (JS) divergence.&lt;/p&gt;
+&lt;h3 id=&#34;kl-divergence&#34;&gt;KL-divergence&lt;/h3&gt;
+&lt;p&gt;KL-divergence is not symmetric, depending on the ordering, we will obtain two different measures. We firstly show their difference from analysis and a toy example and then discuss some applications of both cases.&lt;/p&gt;
+&lt;h5 id=&#34;minimize-forward-kl-divergence&#34;&gt;Minimize Forward KL-divergence&lt;/h5&gt;
+&lt;p&gt;Forward KL-divergence means that the divergence is under the expectation of true distribution.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\theta ^ { * } &amp;amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] \\  &amp;amp; = \arg \min _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\ &amp;amp; = \arg \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x )  \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;From equation (3) we can see that if we want to maximize $\log p _ {\theta} ( x )$ under the expectation of $q(x)$, we need to avoid having near-zero probability where datapoint exists, because $\log p _ {\theta} ( x )$ will go to nagative infinity. So in this way, the model tries to cover the entire support of the true distribution, but the model could assign probability mass to regions where the true distribution has low probability (where datapoint does not exist), the consequence is the model could generate unrealistic samples.&lt;/p&gt;
+&lt;h5 id=&#34;minimize-reverse-kl-divergence&#34;&gt;Minimize Reverse KL-divergence&lt;/h5&gt;
+&lt;p&gt;Reverse KL-divergence means that the divergence is under the expectation of the approximate distribution.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\theta ^ { * } &amp;amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ p _ {\theta} ( x ) || q ( x ) ] \\  &amp;amp; = \arg \min _ { \theta } \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log p _ {\theta} ( x )  -  \log q ( x ) \right] \\ &amp;amp; = \arg \max _ { \theta } H , [ p _ {\theta} ( x ) ] + \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log q ( x )  \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;From equation (3) we can see that the first term miximize the entropy of $p _ {\theta} ( x )$, it means that the model distribution should as spread out as possible, the second term means that where the model distribution have probability mass, the true data distribution should not have near-zero probability, hence the support of $p _ {\theta} ( x )$ is basically a subset of the support of $q(x)$. The consequence is that the model might not produce unrealistic samples but could suffer sample diversity because it might not capture all the modes of true data distribution.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Experiments&lt;/strong&gt;: To illustrate the analysis above, let&amp;rsquo;s see a toy example. We have some samples drawn randomly from a 1D Gaussian Mixture distribution $p(x)$, but we do not know that, and we fit a Gaussian distribution $p _ { \theta } (x)$ to these samples, the parameters in the model are the mean and variance of the Gaussian distribution. Figure 1. shows the results of minimize KL-divergence from two directions, the result proves our analysis is right: the model minimizing forward KL-divergence cover all the support of true data, but have large probability density in the middle where true data distribution has low distribution density, the samples will look unrealistic in this region. Minimizing reverse KL-divergence only capture one mode of true data distribution but seems not produce unrealistic samples.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./KL.png&#34; alt=&#34;Figure 1. KL divergence minimization from two directions&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As we have discussed in previous post, VAE maximizes a lower bound on data likelihood, and is equivalently minimizing the forward KL-divergence. On the contrary, Expectation Propagation (EP) minimizes the reverse KL-divergence.&lt;/p&gt;
+&lt;h3 id=&#34;js-divergence&#34;&gt;JS-divergence&lt;/h3&gt;
+&lt;p&gt;Inn my GAN post, we can see that the generator of GAN actually minimize the JS-divergence between&lt;/p&gt;
+&lt;h3 id=&#34;f-divergence&#34;&gt;$f$-divergence&lt;/h3&gt;
+&lt;p&gt;$f$-divergence is a family of a large class of different divergences depend on different $f$ functions, Kullback-Leibler divergence, Hellinger distance, JS-divergence and Kolmogorov total variation distance are some well known instances of $f$-divergence. Given two distributions $P$ and $Q$ that possess, respectively, an absolutely continuous density function $p$ and $q$ with respect to a base measure $dx$ defined on the domain $\mathcal {X}$, we define the $f$-divergence as :&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D _ { f } ( P || Q ) = \int _ { \mathcal { X } } q ( x ) f \left( \frac { p ( x ) } { q ( x ) } \right) \mathrm { d } x
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where the function $f$ is a convex function satisfying $f(1) = 0$, by selecting different choices of $f$, some popular divergences will be recovered as special cases of $f$-divergence.&lt;/p&gt;
+&lt;p&gt;f-GAN [2] proposed variational divergence minimization (VDM) to estimate $D _ { f } ( P || Q )$ given only samples from $P$ and $Q$. Every convex, lower-semicontinuous function $f$ has a convex conjugate function $ f ^ { * } $ defined as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+f ^ { * } ( t ) = \sup _ { u \in \operatorname { dom } _ { f } } [ u t - f ( u ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The function $ f ^ { * } $  is again convex and lower-semicontinuous and the pair $(f, f ^ { * })$ is dual to another in the sense that $f ^ { ** }= f$. Therefore, we can also represent $f$ as&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+f ( u ) = \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t u - f ^ { * } ( t ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D _ { f } ( P || Q ) &amp;amp; = \int _ { \mathcal { X } } q ( x ) \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t \frac { p ( x ) } { q ( x ) } - f ^ { * } ( t ) ] \mathrm { d } x \\ &amp;amp; \geq \sup _ { T \in \mathcal { T } } \left( \int _ { \mathcal { X } } p ( x ) T ( x ) \mathrm { d } x - \int _ { \mathcal { X } } q ( x ) f ^ { * } ( T ( x ) ) \mathrm { d } x \right) \\ &amp;amp; = \sup _ { T \in \mathcal { T } } \left( \mathbb { E } _ { x \sim P } [ T ( x ) ] - \mathbb { E } _ { x \sim Q } \left[ f ^ { * } ( T ( x ) ) \right] \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where $\mathcal { T }$ is an arbitrary class of functions $T : \mathcal { X } \rightarrow \mathbb { R }$, the bound is tight for $T ^ { * } ( x ) = f ^ { \prime } \left( \frac { p ( x ) } { q ( x ) } \right)$.&lt;/p&gt;
+&lt;p&gt;For f-GAN, which contains a generator $Q _ { \theta }$ and a discriminator $T _ { \omega }$, its objective function is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ T _ { \omega } ( x ) \right] - \mathbb { E } _ { x \sim Q _ { \theta } } \left[ f ^ { * } \left( T _ { \omega } ( x ) \right) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where we minimize with respect to $\theta$ and maximize with respect to $\omega$. We can see the GAN objective&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ \log D _ { \omega } ( x ) \right] + \mathbb { E } _ { x \sim Q _ { \theta } } \left[ \log \left( 1 - D _ { \omega } ( x ) \right) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;as a special instance of f-GAN objective.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://proceedings.mlr.press/v80/tao18b/tao18b.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tao, Chenyang, et al. &amp;ldquo;Chi-square generative adversarial network.&amp;rdquo; International Conference on Machine Learning. 2018.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://papers.nips.cc/paper/6066-f-gan-training-generative-neural-samplers-using-variational-divergence-minimization.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Nowozin, Sebastian, Botond Cseke, and Ryota Tomioka. &amp;ldquo;f-gan: Training generative neural samplers using variational divergence minimization.&amp;rdquo; Advances in neural information processing systems. 2016.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Variational Autoencoders</title>
+      <link>/post/vae/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/vae/</guid>
+      <description>&lt;p&gt;Variational Autoencoder (VAE) can be seen as a stochastic version of conventional autoencoder which imposes some constraints on the distribution of latent variables, however, the original VAE was derived from Variational Bayesian method and linked to Autoencoder just because some terms in objective function can be interpreted as an encoder and a decoder.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first derive VAE from scratch and then we see how to implement it in Tensorflow.&lt;/p&gt;
+&lt;p&gt;As a kind of generative model, VAE aims to learn the underlying distribution of dataset which is unknown to us and maybe very complex. A common &amp;lsquo;distance&amp;rsquo; measure of two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which is defined to be&lt;/p&gt;
+&lt;p&gt;$$
+\mathcal { D } _ { \mathrm { KL } } [ p ( x ) || q ( x ) ] = \mathbb { E } _ { p ( x ) } \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
+$$&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: the KL divergence is not symmetrical, we will explore their difference in later blogs&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] &amp;amp; = \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\                       &amp;amp; = - H , [ q (x) ] - \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Note that $q(x)$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $q(x)$ is a constant, so&lt;/p&gt;
+&lt;p&gt;$$
+\min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] = \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
+$$&lt;/p&gt;
+&lt;p&gt;See what? &lt;strong&gt;Minimize the KL divergence of the data distribution and model distribution is equivalent to maximum likelihood method.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;VAE is a latent variable generative model which learns the distribution of data space $x \in \mathcal { X }$ from a latent space $z \in \mathcal { Z }$, we can define a prior of latent space $p(z)$, which is usually a standard normal distribution, then we can model the data distribution with a complex conditional distribution $p _ { \theta } ( x | z )$, so the model data likelihood can be computed as&lt;/p&gt;
+&lt;p&gt;$$p _ { \theta } ( x ) = \int _ { z } p _ { \theta } ( x | z ) p ( z ) \mathrm { d } z$$&lt;/p&gt;
+&lt;p&gt;However, direct maximization of the likelihood is intractable because the intergration. VAE instead optimizes a lower bound of $p _ { \theta } ( x )$, we can derive it using Jenson&amp;rsquo;s Inequality:&lt;/p&gt;
+&lt;p&gt;If $f$ is a convex function and $X$ is a random variable, then&lt;/p&gt;
+&lt;p&gt;$$
+E f ( X ) \geq f ( E X )
+$$&lt;/p&gt;
+&lt;p&gt;the equality holds only when $X = E X$, i.e,&lt;/p&gt;
+&lt;p&gt;In our case,&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\log p _ {\theta} ( x ) &amp;amp; = \log \int _ { z } p _ { \theta } ( x , z ) \mathrm { d } z  \\  &amp;amp; = \log \int _ { z } q _ { \phi } ( z | x )  [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \mathrm { d } z \\ &amp;amp; = \log \mathbb { E } _ { q _ { \phi } ( z | x) } [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \\ &amp;amp; \geq \mathbb { E } _ { q _ { \phi } ( z | x) } \log [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The last line of the derivation is called the &lt;strong&gt;Evidence Lower BOund (ELBO)&lt;/strong&gt;, which is used frequently in Variational Inference. It seems confusing what is $q _ { \phi } ( z | x)$? Actually it is an approximate distribution of true posterior $p _ {\theta} ( z | x)$ of latent variable $z$ given datapoint $x$. Let&amp;rsquo;s see where it comes from.&lt;/p&gt;
+&lt;p&gt;Maybe you have heard of VAE is a generative model, actually it is an instance of Variational Inference family, it is used to perform inference of the data in the first place. Given a raw datapoint $x$, how to learn its representations $z$ like shape, size, category, etc. The posterior of latent variables $p _ { \theta } ( z  | x  ) = p _ { \theta  } ( x  |  z  ) p ( z  ) / p _ { \theta } ( x )$ is also intractable because $p _ { \theta } ( x )$ is intractable as we have discussed. VAE introduced a recognition model $q _ { \phi } (z|x)$ to approximate the true postrior $p _ { \theta } ( z | x )$. Similarly, we aims to minimize the KL divergence between them:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( z | x ) \right] \\                       &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( x | z ) - \log  p ( z ) \right] + \log p _ { \theta } ( x )  \\                                                                                        &amp;amp; = - \mathrm { ELBO } + \log p _ { \theta } ( x )
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;$\log p _ { \theta } (x)$ out of expectation because it does not depend on $z$, rearranging thte equation we obtain&lt;/p&gt;
+&lt;p&gt;$$
+\mathrm { ELBO } = \log p _ { \theta } (x) - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ]
+$$&lt;/p&gt;
+&lt;p&gt;Surprise! We get the same objective, maximize the ELBO is equavalent to minimize the KL divergence between $q _ { \phi } ( z | x )$ and $p _ {\theta} ( z | x )$ and at the same time maximize $\log p _ { \theta } (x)$.&lt;/p&gt;
+&lt;p&gt;So, all the remaining is to maxmize the ELBO, which is tractable under some weak assumptions, let&amp;rsquo;s see how to deal with it.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathrm { ELBO } &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) + \log  p ( z ) - \log q _ { \phi } ( z | x ) \right] \\     &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) \right] - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The first term on RHS is actually the reconstruction error, which is MSE for real value data or cross-entropy for binary value data. The second term is the KL divergence of approximate posterior and prior of latent variables $z$, which can be computed analytically. From the objective function we can see two things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;What is  $q _ { \phi } ( z | x )$, given $x$, compute the distribution of $z$; what is $p _ {\theta} ( x | z )$, given $z$, compute the distribution of $x$, if both are implemented by neural network, then they are the encoder and decoder of an Autoencoder, respectively. Now, get the name?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Why VAE can generate new data while conventional Autoencoders fail: The first term in the objective is the same as convetional Autoencoder if implemented deterministically, the secret is the second term, VAE forces the mapping from data to latent variables to be as close as a prior, so any time we sample a latent variable from the prior, the decoder knows what to generate, while conventional Autoencoder distribute the latent varibles randomly, there are many gaps between them, if we sample a latent variable from the gap and feed to decoder, the decoder has no idea of it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Before we implemented VAE, there are still several thing to do.&lt;/p&gt;
+&lt;p&gt;Firstly we have a glance of how to compute the $\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]$ term. we assume the prior of $z$ is standard Gaussian, $p ( z ) = \mathcal { N } ( 0 , \mathbf { I } )$, this is suitable when implemented VAE by neural networks, because whatever the true prior is, the decoder network can transform the standard Gaussian to it at some layer. So our approximate posterior $q _ { \phi } ( z | x )$ will also take a Guassian distribution form $ \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) $, and the parameters $\boldsymbol { \mu }$ and $\boldsymbol { \sigma }$ is computed by encoder. We compute $\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]$ using just simple calculus:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log q _ { \phi } ( z | x ) -  \log  p ( z ) \right] \\  &amp;amp; = \int \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) [\log \mathcal { N } \left( z ; \boldsymbol { \mu } , \boldsymbol { \sigma } ^ { 2 } \right) - \log \mathcal { N } ( z ; \mathbf { 0 } , \mathbf { I } )] d \mathbf { z }  \\  &amp;amp; = \frac { 1 } { 2 } \sum _ { j = 1 } ^ { J } \left( - \log \left( \left( \sigma _ { j } \right) ^ { 2 } \right) + \left( \mu _ { j } \right) ^ { 2 } + \left( \sigma _ { j } \right) ^ { 2 } - 1 \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where J id the dimension of vectors $z$, $\mu _ { j } $ and $\sigma _ { j } $ denote the $j$-th element of mean and variance of $z$, respectively.&lt;/p&gt;
+&lt;p&gt;We can see the ELBO contains encoder parameters $\phi$ and decoder parameters $\theta$. The gradient with respect to $\theta$ is easy to compute:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \theta } \mathrm {ELBO}  &amp;amp; =  \nabla _ { \theta } \mathbb { E } _ { q _ {\phi} (z | x)}  \log p _ { \theta } ( x | z) \\   &amp;amp; =  \mathbb { E } _ { q _ {\phi} (z | x)} [ \nabla _ { \theta }  \log p _ { \theta } ( x | z) ]  \\  &amp;amp; \simeq  \frac { 1 } { L } \sum _ { l = 1 } ^ { L } [ \nabla _ { \theta }  \log p _ { \theta } ( x | z ^ { ( l ) }) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;the last line comes from Monte Carlo estimation, where $ z  ^ { ( l ) } \sim q _ { \phi } \left( z | x \right)$&lt;/p&gt;
+&lt;p&gt;However, the gradient with respect to $\phi$ need specical handling because common gradient estimator like score function estimator exhibits exhibits very high variance thus impractical.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \phi } \mathbb { E } _ { q _ { \phi } ( z ) } [ f ( z ) ]  &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z  ) } \left[ f ( z ) \nabla _ { \phi } \log q _ { \phi } ( z ) \right]  \\     &amp;amp; \simeq \frac { 1 } { L } \sum _ { l = 1 } ^ { L } [ f ( z ) \nabla _ { \phi } \log q _ { \phi } \left( z ^ { ( l ) } \right) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;VAE uses a &amp;lsquo;&lt;strong&gt;reparameterization trick&lt;/strong&gt;&amp;rsquo; to derive an unbiased gradient estimator. Instead of sampling $ z \sim q _ { \phi } \left( z | x \right)$ directly, it reparameterize the random variable $\widetilde { z } \sim q _ { \phi } ( z | x )$ using a differentiable transformation $g _ { \phi } (  \epsilon , x )$ with an auxiliary noise variable $\epsilon$.&lt;/p&gt;
+&lt;p&gt;$$
+\widetilde {  z } = g _ { \phi } ( \epsilon , x ) \quad \text { with } \quad \epsilon  \sim p ( \epsilon  )
+$$&lt;/p&gt;
+&lt;p&gt;In the univariate Gaussian case, $z \sim \mathcal { N } \left( \mu , \sigma ^ { 2 } \right)$, we can sample $\epsilon \sim \mathcal { N } ( 0,1 )$ and then use the transformation $z = \mu + \sigma \epsilon$.&lt;/p&gt;
+&lt;p&gt;In this way, we can compute the gradient with respect to $\phi$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\nabla _ { \phi } \mathrm {ELBO}  &amp;amp; =  \nabla _ { \phi }  \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) \right] - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]   \\   &amp;amp; =  \frac { 1 } { L } \sum _ { l = 1 } ^ { L } \left( \log p _ { \boldsymbol { \theta } } \left( x |  z  ^ {  (l)  } \right) \right) - D _ { K L } \left( q _ { \phi } \left( z  | x \right) || p ( z ) \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where $ z  ^ {  (l)  } \sim g _ { \phi } \left( x , \epsilon ^ { ( l ) } \right) = \mu  +  \sigma \odot  \epsilon  ^ { ( l ) } \text { where }  \epsilon  ^ { ( l ) } \sim \mathcal { N } ( \mathbf { 0 } , \mathbf { I } ) $&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;There are several important estimators in machine learning area, we will explore that in later blog.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All right, everything is done, the following codes snippets will help to understand the theory discussed above.&lt;/p&gt;
+&lt;p&gt;First implement encoder network, taking data $x$ as input, output is the mean and standard deviation of $ q _ {\phi} (z | x)$&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def encoder(self, x, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;encoder&#39;, reuse=reuse):
+        # 1st convolutional layer
+        conv1 = tf.layers.conv2d(inputs=x, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lr_conv1 = tf.nn.leaky_relu(conv1)
+        #2nd convolutional layer
+        conv2 = tf.layers.conv2d(inputs=lr_conv1, filters=128, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lr_conv2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training = is_training))
+        # flatten the convolutional layer
+        flat = tf.layers.flatten(lr_conv2)
+        #flat = tf.reshape(lr_conv2, [self.batch_size, -1])
+        # 1st fully-connected layer
+        fc1 = tf.layers.dense(flat, units=1024)
+        lr_fc1 = tf.nn.leaky_relu(tf.layers.batch_normalization(fc1, training = is_training))
+        # output layer
+        out = tf.layers.dense(lr_fc1, units=2*self.z_dim)
+        # The mean parameter is unconstrained
+        mean = out[:, :self.z_dim]
+        # The standard deviation must be positive. Parametrize with a softplus and
+        # add a small epsilon for numerical stability
+        stddev = 1e-6 + tf.nn.softplus(out[:, self.z_dim:])
+        return mean, stddev
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then implement the decoder network, taking latent variables $z$ as input, output the Bernoulli parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def decoder(self, z, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;decoder&#39;, reuse=reuse):
+        # 1st fully-connected layer
+        fc1 = tf.layers.dense(z, units=1024)
+        r_fc1 = tf.nn.relu(tf.layers.batch_normalization(fc1, training=is_training))
+        # 2nd fully-connected layer
+        fc2 = tf.layers.dense(r_fc1, units=8 * 8 * 128)
+        r_fc2 = tf.nn.relu(tf.layers.batch_normalization(fc2, training=is_training))
+        # reshape the fully-connected layer
+        deflat = tf.reshape(r_fc2, [-1, 8, 8, 128])
+        # 1st deconvolutional layer
+        deconv1 = tf.layers.conv2d_transpose(inputs=deflat, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        r_deconv1 = tf.nn.relu(tf.layers.batch_normalization(deconv1, training=is_training))
+        # output layer
+        deconv_out = tf.layers.conv2d_transpose(inputs=r_deconv1, filters=1, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        out = tf.nn.sigmoid(deconv_out)
+        return out
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can see how reparameteration trick works and how to implement the objective.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def build_model(self):
+    # placeholder
+    self.input_x = tf.placeholder(dtype = tf.float32, shape = [None] + self.image_dim, name = &#39;input_x&#39;)
+    self.input_z = tf.placeholder(dtype = tf.float32, shape = [None, self.z_dim], name = &#39;input_z&#39;)
+    # encoding 
+    mu, sigma = self.encoder(self.input_x, is_training = True, reuse = False)
+    # reparameterize
+    z = mu + sigma * tf.random_normal(tf.shape(mu), 0, 1, dtype = tf.float32)
+    # decoding 
+    outputs = self.decoder(z, is_training = True, reuse = False)
+    self.outputs = tf.clip_by_value(outputs, 1e-8, 1 - 1e-8)
+    # loss 
+    self.nll = -tf.reduce_mean(tf.reduce_sum(self.input_x * tf.log(self.outputs) 
+        + (1 - self.input_x) * tf.log(1 - self.outputs), [1, 2]))
+    self.KL_div = tf.reduce_mean(0.5 * tf.reduce_sum(tf.square(mu) + tf.square(sigma) 
+        - tf.log(1e-8 + tf.square(sigma)) - 1, [1]))
+    ELBO = -(self.nll + self.KL_div)
+    self.loss = -ELBO
+    # optimizer
+    t_vars = tf.trainable_variables()
+    with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+        self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss, var_list = t_vars)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/abs/1312.6114&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Kingma, Diederik P., and Max Welling. &amp;ldquo;Auto-encoding variational bayes.&amp;rdquo; arXiv preprint arXiv:1312.6114 (2013).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/abs/1606.05908&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Doersch, Carl. &amp;ldquo;Tutorial on variational autoencoders.&amp;rdquo; arXiv preprint arXiv:1606.05908 (2016).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

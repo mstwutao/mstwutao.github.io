@@ -5,7 +5,7 @@
     <link>/author/tao-wu/</link>
       <atom:link href="/author/tao-wu/index.xml" rel="self" type="application/rss+xml" />
     <description>Tao Wu</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Tao Wu</copyright><lastBuildDate>Sun, 07 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2018-2020 Tao Wu</copyright><lastBuildDate>Sun, 07 Apr 2019 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/author/tao-wu/avatar_hu52a603635ecebd45650b162dadabb4e5_12861_270x270_fill_q90_lanczos_center.jpg</url>
       <title>Tao Wu</title>
@@ -28,59 +28,245 @@
     </item>
     
     <item>
-      <title>Display Jupyter Notebooks with Academic</title>
-      <link>/post/jupyter/</link>
-      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>/post/jupyter/</guid>
-      <description>&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from IPython.core.display import Image
-Image(&#39;https://www.python.org/static/community_logos/python-logo-master-v3-TM-flattened.png&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./index_1_0.png&#34; alt=&#34;png&#34;&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;print(&amp;quot;Welcome to Academic!&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;Welcome to Academic!
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;install-python-and-jupyterlab&#34;&gt;Install Python and JupyterLab&lt;/h2&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://www.anaconda.com/distribution/#download-section&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Install Anaconda&lt;/a&gt; which includes Python 3 and JupyterLab.&lt;/p&gt;
-&lt;p&gt;Alternatively, install JupyterLab with &lt;code&gt;pip3 install jupyterlab&lt;/code&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;create-or-upload-a-jupyter-notebook&#34;&gt;Create or upload a Jupyter notebook&lt;/h2&gt;
-&lt;p&gt;Run the following commands in your Terminal, substituting &lt;code&gt;&amp;lt;MY-WEBSITE-FOLDER&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;SHORT-POST-TITLE&amp;gt;&lt;/code&gt; with the file path to your Academic website folder and a short title for your blog post (use hyphens instead of spaces), respectively:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir -p &amp;lt;MY-WEBSITE-FOLDER&amp;gt;/content/post/&amp;lt;SHORT-POST-TITLE&amp;gt;/
-cd &amp;lt;MY-WEBSITE-FOLDER&amp;gt;/content/post/&amp;lt;SHORT-POST-TITLE&amp;gt;/
-jupyter lab index.ipynb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The &lt;code&gt;jupyter&lt;/code&gt; command above will launch the JupyterLab editor, allowing us to add Academic metadata and write the content.&lt;/p&gt;
-&lt;h2 id=&#34;edit-your-post-metadata&#34;&gt;Edit your post metadata&lt;/h2&gt;
-&lt;p&gt;The first cell of your Jupter notebook will contain your post metadata (
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/front-matter/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;front matter&lt;/a&gt;).&lt;/p&gt;
-&lt;p&gt;In Jupter, choose &lt;em&gt;Markdown&lt;/em&gt; as the type of the first cell and wrap your Academic metadata in three dashes, indicating that it is YAML front matter:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;---
-title: My post&#39;s title
-date: 2019-09-01
+      <title>Generative Adversarial Networks</title>
+      <link>/post/gan/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/gan/</guid>
+      <description>&lt;p&gt;Generative Adversarial Networks(GAN) [1] has become one of the most powerful techniques in machine learning since its emergence in 2014. The interesting idea of training methods and the flexible design of the objective function make GAN have numerous variants, and these variants even consist of a 
+&lt;a href=&#34;https://deephunt.in/the-gan-zoo-79597dc8c347&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GAN zoo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first interpret GAN from perspectives and then see how to implement GAN in Tensorflow:&lt;/p&gt;
+&lt;h2 id=&#34;game-theory&#34;&gt;Game Theory&lt;/h2&gt;
+&lt;p&gt;GAN consists of two models: a generative model $G$ that tries to generate realistic samples, and a discriminative model $D$ that tries to classify data from both $G$ and dataset. The training procedure for $G$ is to maximize the probability of $D$ making a mistake, and $D$ is to maximize the probability of correctly classify all samples it receives. This framework corresponds to a minimax two-player game, the generative model can be thought of as analogous to a team of counterfeiters, trying to produce fake currency and use it without detection, while the discriminative model is analogous to the police, trying to detect the counterfeit currency. Competition in this game drives both teams to improve their methods until the counterfeits are indistiguishable from the genuine articles.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s formulate GAN in mathematics now. Both $G : Z \rightarrow X$ and $D : X \rightarrow [0, 1]$ are represented by neural networks, like other common generative models, $G$ takes vectors of noise $z \sim p(z)$ as input, the output $G(z)$ are the fake samples with the same size as data from dataset, $D$ recieves samples from both dataset and $G$, and it outputs the probability of the samples it receives are whether real or fake.&lt;/p&gt;
+&lt;p&gt;Hence, the objective of $D$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(D) = \max , \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The objective of $G$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(G) &amp;amp; = \max , \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log (D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min , \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min , \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Equation (4) holds because $\mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ]$ does not depend on $G$, so we can write the objective of GAN as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } \max _ { D } V ( D , G ) =  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;divergence-minimization&#34;&gt;Divergence Minimization&lt;/h2&gt;
+&lt;p&gt;As a generative model, $G$ tries to capture the true data distribution, hence it seeks to minimize a kind of divergence between the model distribution $p _ { g }$ and data distribution $p _ { \mathrm { data } }$. But how can $G$ achieve it?&lt;/p&gt;
+&lt;p&gt;The training process of GAN is to train $G$ and $D$ in turn, when training $G$ we keep $D$ fixed and vice versa, before the training converges, what is the optimal $D$ for a fixed $G$?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\max _ { D } V ( D , G ) &amp;amp; = \max \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) d x + \int _ { \boldsymbol { z } } p  ( \boldsymbol { z } ) \log ( 1 - D ( g ( \boldsymbol { z } ) ) ) d z \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) + p _ { g } ( \boldsymbol { x } ) \log ( 1 - D ( \boldsymbol { x } ) ) d x
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Using simple calculus, we know function $ a \log ( y ) + b \log ( 1 - y )$ achieves its maximum in $[0, 1]$ at $\frac { a } { a + b }$, hence the optimal $D$ is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D  ^ { * } ( \boldsymbol { x } ) = \frac { p _ { \text {data} } ( \boldsymbol { x } ) } { p _ { \text {data} } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) }
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;If at every step, we train $D$ to the optimum, then what will the objective of $G$ like?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } V ( D , G ) &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { z } \sim p (z)} \left[ \log \left( 1 - D  ^ { * } ( G ( \boldsymbol { z } ) ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \left( 1 - D ^ { * } ( \boldsymbol { x } ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } )} \left[ \log \frac { p _ { \text { data } } ( \boldsymbol { x } ) } { P _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \frac { p _ { g } ( \boldsymbol { x } ) } { p _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; = - \log ( 4 ) + K L \left( p _ { \text { data } } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) + K L \left( p _ { g } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) \\ &amp;amp; = - \log ( 4 ) + 2 \cdot J S D \left( p _ { \text { data } } || p _ { g } \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Now we can see that $G$ is minimizing the Jensen– Shannon divergence between the model’s distribution and the true data distribution. All right, let&amp;rsquo;s see the Tensorflow implementation of GAN to better understand the theory discussed above. The implementation is based on Deep Convolutional GAN (DCGAN) because the original GAN&amp;rsquo;s training is very instable.&lt;/p&gt;
+&lt;h2 id=&#34;tensorflow-implementation&#34;&gt;Tensorflow implementation&lt;/h2&gt;
+&lt;p&gt;The generator part, it takes a vector of $z$ as input, output an fake image sample.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def generator(self, z, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;generator&#39;, reuse=reuse):
+        z = tf.reshape(z, [-1, 1, 1, self.config.z_dim])
+        # 1st hidden layer
+        conv1 = tf.layers.conv2d_transpose(z, 1024, [4, 4], strides=(1, 1), padding=&#39;valid&#39;)
+        lrelu1 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv1, training=is_training), 0.2)
+    
+        # 2nd hidden layer
+        conv2 = tf.layers.conv2d_transpose(lrelu1, 512, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training=is_training), 0.2)
+    
+        # 3rd hidden layer
+        conv3 = tf.layers.conv2d_transpose(lrelu2, 256, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu3 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv3, training=is_training), 0.2)
+    
+        # output layer
+        conv4 = tf.layers.conv2d_transpose(lrelu3, self.image_dim[-1], [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        out = tf.nn.sigmoid(conv4)
 
-# Put any other Academic metadata here...
----
+        return out
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Edit the metadata of your post, using the 
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;documentation&lt;/a&gt; as a guide to the available options.&lt;/p&gt;
-&lt;p&gt;To set a 
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content/#featured-image&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;featured image&lt;/a&gt;, place an image named &lt;code&gt;featured&lt;/code&gt; into your post&amp;rsquo;s folder.&lt;/p&gt;
-&lt;p&gt;For other tips, such as using math, see the guide on 
-&lt;a href=&#34;https://sourcethemes.com/academic/docs/writing-markdown-latex/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;writing content with Academic&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;convert-notebook-to-markdown&#34;&gt;Convert notebook to Markdown&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;jupyter nbconvert index.ipynb --to markdown --NbConvertApp.output_files_dir=.
+&lt;p&gt;The discriminator receive an image, outputs the probability that image is real.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def discriminator(self, x, is_training=True, reuse=False):
+    with tf.variable_scope(&#39;discriminator&#39;, reuse=reuse):
+        # 1st hidden layer
+        conv1 = tf.layers.conv2d(x, 128, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu1 = tf.nn.leaky_relu(conv1, 0.2)
+    
+        # 2nd hidden layer
+        conv2 = tf.layers.conv2d(lrelu1, 256, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training=is_training), 0.2)
+    
+        # 3rd hidden layer
+        conv3 = tf.layers.conv2d(lrelu2, 512, [4, 4], strides=(2, 2), padding=&#39;same&#39;)
+        lrelu3 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv3, training=is_training), 0.2)
+    
+        # output layer
+        logits = tf.layers.conv2d(lrelu3, 1, [4, 4], strides=(1, 1), padding=&#39;valid&#39;)
+        out = tf.nn.sigmoid(logits)
+    
+        return out, logits
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
-&lt;p&gt;This post was created with Jupyter. The orginal files can be found at &lt;a href=&#34;https://github.com/gcushen/hugo-academic/tree/master/exampleSite/content/post/jupyter&#34;&gt;https://github.com/gcushen/hugo-academic/tree/master/exampleSite/content/post/jupyter&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The loss for both networks are pretty self-explainatory.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def build_model(self):
+    # placeholder
+    self.input_x = tf.placeholder(dtype=tf.float32, shape=[None] + self.image_dim, name=&#39;input_x&#39;)
+    self.input_z = tf.placeholder(dtype=tf.float32, shape=[None, self.config.z_dim], name=&#39;input_z&#39;)
+
+    # generate fake data
+    self.g_fake = self.generator(self.input_z) 
+
+    # discrinminate real and fake data
+    self.d_real, self.d_real_logits = self.discriminator(self.input_x)
+    self.d_fake, self.d_fake_logits = self.discriminator(self.g_fake, reuse=True)
+
+    # testing generated images
+    self.generated_images = self.generator(self.input_z, is_training=False, reuse=True)
+
+    # loss
+    with tf.variable_scope(&amp;quot;loss&amp;quot;):
+        # loss for each network
+        d_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_real_logits, labels=tf.ones_like(self.d_real_logits)))
+        d_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_fake_logits, labels=tf.zeros_like(self.d_fake_logits)))
+        self.d_loss = d_loss_real + d_loss_fake
+        self.g_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.d_fake_logits, labels=tf.ones_like(self.d_fake_logits)))
+    
+        # optimizer
+    with tf.variable_scope(&amp;quot;optimizer&amp;quot;):
+        t_vars = tf.trainable_variables()
+        d_vars = [var for var in t_vars if var.name.startswith(&#39;discriminator&#39;)]
+        g_vars = [var for var in t_vars if var.name.startswith(&#39;generator&#39;)]
+
+        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+            self.d_optim = tf.train.AdamOptimizer(self.config.learning_rate, beta1=0.5).minimize(self.d_loss, var_list=d_vars)
+            self.g_optim = tf.train.AdamOptimizer(self.config.learning_rate, beta1=0.5).minimize(self.g_loss, var_list=g_vars)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Goodfellow, Ian, et al. &amp;ldquo;Generative adversarial nets.&amp;rdquo; Advances in neural information processing systems. 2014.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1809.02145.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jolicoeur-Martineau, Alexia. &amp;ldquo;GANs beyond divergence minimization.&amp;rdquo; arXiv preprint arXiv:1809.02145 (2018).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 </description>
     </item>
     
     <item>
-      <title>Academic: the website builder for Hugo</title>
-      <link>/post/getting-started/</link>
+      <title>Training generative models as divergence minimization</title>
+      <link>/post/divergence/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/post/getting-started/</guid>
+      <guid>/post/divergence/</guid>
+      <description>&lt;p&gt;Generative models can be used for data compression, denoising, inpainting, image synthesis, semi-supervised learning, unsupervised representation learning, and other tasks. There are many kinds of generative models, and among which GAN, VAE and autoregressive models are the most popular ones. A great blog on 
+&lt;a href=&#34;https://openai.com/blog/generative-models/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Generative Models&lt;/a&gt; written by OpenAI is worth reading at length. In this blog, we mainly discuss generative models from a divergence minimization perspective.&lt;/p&gt;
+&lt;p&gt;Generative models, as its name explains, it can be used to generate data, the prerequisite is to understand the training dataset, i.e, learn the distribution of the dataset. In order to match model distribution $p _ { \theta } (x)$ to the true data distribution $q(x)$, generative models usually estimate a discrepancy (sometimes we call it distance, divergence)  measure $ d(p _ { \theta } (x), q(x))$ and optimize the model parameters $\theta$ to minimize this discrepancy. However we don&amp;rsquo;t have access to the underlying true data distribution, we only have samples from it (the dataset), so we use this empirical distribution as a surrogate for true data distribution. The wish is that if the model is correct, and for extremely large amounts of data, the model distribution will recover the true data distribution.&lt;/p&gt;
+&lt;p&gt;There are many concepts of measuring the discrapency between two distributions, in practice, we have only finite data from the dataset and follow some tractable assumptions about the distribution, hence there is often a mismatch between the data distribution and the model distribution, and different discrapency minimization can lead to very different results. Following [1], these discrepancy measures can be casted into three categories: information-theoretic divergences, integral probability metrics, and Hilbert space discrepancy metrics. Now we have a closer look at how to estimate these different measures and what different results we get.&lt;/p&gt;
+&lt;p&gt;*Note: Divergences are a weak form of distance between two probability distributions with the two properties:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Non-negative&lt;/li&gt;
+&lt;li&gt;Equal to zero if and only if the distributions are equal.
+we do not require them to be symmetric and follow triangle inequality.*&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;information-theoretic-divergences&#34;&gt;Information-theoretic divergences&lt;/h2&gt;
+&lt;p&gt;In this part, we mainly consider Information-theoretic divergences, f-divergence family, which contains some often used divergence like Kullback-Leibler (KL) divergence and Jensen-Shannon (JS) divergence.&lt;/p&gt;
+&lt;h3 id=&#34;kl-divergence&#34;&gt;KL-divergence&lt;/h3&gt;
+&lt;p&gt;KL-divergence is not symmetric, depending on the ordering, we will obtain two different measures. We firstly show their difference from analysis and a toy example and then discuss some applications of both cases.&lt;/p&gt;
+&lt;h5 id=&#34;minimize-forward-kl-divergence&#34;&gt;Minimize Forward KL-divergence&lt;/h5&gt;
+&lt;p&gt;Forward KL-divergence means that the divergence is under the expectation of true distribution.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\theta ^ { * } &amp;amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] \\  &amp;amp; = \arg \min _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\ &amp;amp; = \arg \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x )  \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;From equation (3) we can see that if we want to maximize $\log p _ {\theta} ( x )$ under the expectation of $q(x)$, we need to avoid having near-zero probability where datapoint exists, because $\log p _ {\theta} ( x )$ will go to nagative infinity. So in this way, the model tries to cover the entire support of the true distribution, but the model could assign probability mass to regions where the true distribution has low probability (where datapoint does not exist), the consequence is the model could generate unrealistic samples.&lt;/p&gt;
+&lt;h5 id=&#34;minimize-reverse-kl-divergence&#34;&gt;Minimize Reverse KL-divergence&lt;/h5&gt;
+&lt;p&gt;Reverse KL-divergence means that the divergence is under the expectation of the approximate distribution.&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\theta ^ { * } &amp;amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ p _ {\theta} ( x ) || q ( x ) ] \\  &amp;amp; = \arg \min _ { \theta } \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log p _ {\theta} ( x )  -  \log q ( x ) \right] \\ &amp;amp; = \arg \max _ { \theta } H , [ p _ {\theta} ( x ) ] + \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log q ( x )  \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;From equation (3) we can see that the first term miximize the entropy of $p _ {\theta} ( x )$, it means that the model distribution should as spread out as possible, the second term means that where the model distribution have probability mass, the true data distribution should not have near-zero probability, hence the support of $p _ {\theta} ( x )$ is basically a subset of the support of $q(x)$. The consequence is that the model might not produce unrealistic samples but could suffer sample diversity because it might not capture all the modes of true data distribution.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Experiments&lt;/strong&gt;: To illustrate the analysis above, let&amp;rsquo;s see a toy example. We have some samples drawn randomly from a 1D Gaussian Mixture distribution $p(x)$, but we do not know that, and we fit a Gaussian distribution $p _ { \theta } (x)$ to these samples, the parameters in the model are the mean and variance of the Gaussian distribution. Figure 1. shows the results of minimize KL-divergence from two directions, the result proves our analysis is right: the model minimizing forward KL-divergence cover all the support of true data, but have large probability density in the middle where true data distribution has low distribution density, the samples will look unrealistic in this region. Minimizing reverse KL-divergence only capture one mode of true data distribution but seems not produce unrealistic samples.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./KL.png&#34; alt=&#34;Figure 1. KL divergence minimization from two directions&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As we have discussed in previous post, VAE maximizes a lower bound on data likelihood, and is equivalently minimizing the forward KL-divergence. On the contrary, Expectation Propagation (EP) minimizes the reverse KL-divergence.&lt;/p&gt;
+&lt;h3 id=&#34;js-divergence&#34;&gt;JS-divergence&lt;/h3&gt;
+&lt;p&gt;Inn my GAN post, we can see that the generator of GAN actually minimize the JS-divergence between&lt;/p&gt;
+&lt;h3 id=&#34;f-divergence&#34;&gt;$f$-divergence&lt;/h3&gt;
+&lt;p&gt;$f$-divergence is a family of a large class of different divergences depend on different $f$ functions, Kullback-Leibler divergence, Hellinger distance, JS-divergence and Kolmogorov total variation distance are some well known instances of $f$-divergence. Given two distributions $P$ and $Q$ that possess, respectively, an absolutely continuous density function $p$ and $q$ with respect to a base measure $dx$ defined on the domain $\mathcal {X}$, we define the $f$-divergence as :&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D _ { f } ( P || Q ) = \int _ { \mathcal { X } } q ( x ) f \left( \frac { p ( x ) } { q ( x ) } \right) \mathrm { d } x
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where the function $f$ is a convex function satisfying $f(1) = 0$, by selecting different choices of $f$, some popular divergences will be recovered as special cases of $f$-divergence.&lt;/p&gt;
+&lt;p&gt;f-GAN [2] proposed variational divergence minimization (VDM) to estimate $D _ { f } ( P || Q )$ given only samples from $P$ and $Q$. Every convex, lower-semicontinuous function $f$ has a convex conjugate function $ f ^ { * } $ defined as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+f ^ { * } ( t ) = \sup _ { u \in \operatorname { dom } _ { f } } [ u t - f ( u ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The function $ f ^ { * } $  is again convex and lower-semicontinuous and the pair $(f, f ^ { * })$ is dual to another in the sense that $f ^ { ** }= f$. Therefore, we can also represent $f$ as&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+f ( u ) = \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t u - f ^ { * } ( t ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D _ { f } ( P || Q ) &amp;amp; = \int _ { \mathcal { X } } q ( x ) \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t \frac { p ( x ) } { q ( x ) } - f ^ { * } ( t ) ] \mathrm { d } x \\ &amp;amp; \geq \sup _ { T \in \mathcal { T } } \left( \int _ { \mathcal { X } } p ( x ) T ( x ) \mathrm { d } x - \int _ { \mathcal { X } } q ( x ) f ^ { * } ( T ( x ) ) \mathrm { d } x \right) \\ &amp;amp; = \sup _ { T \in \mathcal { T } } \left( \mathbb { E } _ { x \sim P } [ T ( x ) ] - \mathbb { E } _ { x \sim Q } \left[ f ^ { * } ( T ( x ) ) \right] \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where $\mathcal { T }$ is an arbitrary class of functions $T : \mathcal { X } \rightarrow \mathbb { R }$, the bound is tight for $T ^ { * } ( x ) = f ^ { \prime } \left( \frac { p ( x ) } { q ( x ) } \right)$.&lt;/p&gt;
+&lt;p&gt;For f-GAN, which contains a generator $Q _ { \theta }$ and a discriminator $T _ { \omega }$, its objective function is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ T _ { \omega } ( x ) \right] - \mathbb { E } _ { x \sim Q _ { \theta } } \left[ f ^ { * } \left( T _ { \omega } ( x ) \right) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;where we minimize with respect to $\theta$ and maximize with respect to $\omega$. We can see the GAN objective&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ \log D _ { \omega } ( x ) \right] + \mathbb { E } _ { x \sim Q _ { \theta } } \left[ \log \left( 1 - D _ { \omega } ( x ) \right) \right]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;as a special instance of f-GAN objective.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://proceedings.mlr.press/v80/tao18b/tao18b.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Tao, Chenyang, et al. &amp;ldquo;Chi-square generative adversarial network.&amp;rdquo; International Conference on Machine Learning. 2018.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://papers.nips.cc/paper/6066-f-gan-training-generative-neural-samplers-using-variational-divergence-minimization.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Nowozin, Sebastian, Botond Cseke, and Ryota Tomioka. &amp;ldquo;f-gan: Training generative neural samplers using variational divergence minimization.&amp;rdquo; Advances in neural information processing systems. 2016.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Variational Autoencoders</title>
+      <link>/post/vae/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/vae/</guid>
       <description>&lt;p&gt;Variational Autoencoder (VAE) can be seen as a stochastic version of conventional autoencoder which imposes some constraints on the distribution of latent variables, however, the original VAE was derived from Variational Bayesian method and linked to Autoencoder just because some terms in objective function can be interpreted as an encoder and a decoder.&lt;/p&gt;
 &lt;p&gt;Let&amp;rsquo;s first derive VAE from scratch and then we see how to implement it in Tensorflow.&lt;/p&gt;
 &lt;p&gt;As a kind of generative model, VAE aims to learn the underlying distribution of dataset which is unknown to us and maybe very complex. A common &amp;lsquo;distance&amp;rsquo; measure of two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which is defined to be&lt;/p&gt;
@@ -245,7 +431,6 @@ $$&lt;/p&gt;
         self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss, var_list = t_vars)
 
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The full codes can be seen at &lt;a href=&#34;https://git.mst.edu/acil-group/tf_vae_collection/blob/master/models/VAE.py&#34;&gt;https://git.mst.edu/acil-group/tf_vae_collection/blob/master/models/VAE.py&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -257,8 +442,6 @@ $$&lt;/p&gt;
 &lt;a href=&#34;https://arxiv.org/abs/1606.05908&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Doersch, Carl. &amp;ldquo;Tutorial on variational autoencoders.&amp;rdquo; arXiv preprint arXiv:1606.05908 (2016).&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;em&gt;Banner image source: 
-&lt;a href=&#34;https://towardsdatascience.com/what-the-heck-are-vae-gans-17b86023588a&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://towardsdatascience.com/what-the-heck-are-vae-gans-17b86023588a&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 </description>
     </item>
     
