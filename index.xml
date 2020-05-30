@@ -247,6 +247,27 @@ Three
     </item>
     
     <item>
+      <title>Adversarial examples</title>
+      <link>/post/adv/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/adv/</guid>
+      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of the confidence in even state of the art DL models. In this post, let&amp;rsquo;s see some methods of generating and defensing adversarial examples.&lt;/p&gt;
+&lt;p&gt;An adversarial example is a sample of input data which has been modified very slightly in a way that the modification are imperceptible to human but can easily fool deep neural networks.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Disentagled representation learning</title>
+      <link>/post/disentangling/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/disentangling/</guid>
+      <description>&lt;p&gt;Disentangled representations are defined as ones where a change in a single unit of the representation corresponds to a change in single factor of variation of the data while being invariant to others.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Generative Adversarial Networks</title>
       <link>/post/gan/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>

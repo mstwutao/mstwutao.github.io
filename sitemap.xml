@@ -103,8 +103,23 @@
   </url>
   
   <url>
+    <loc>/post/adv/</loc>
+    <lastmod>2019-06-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/adversarial-examples/</loc>
+    <lastmod>2019-06-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
     <lastmod>2019-06-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/disentangling/</loc>
+    <lastmod>2019-06-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -123,8 +138,18 @@
   </url>
   
   <url>
+    <loc>/category/machine-learning/</loc>
+    <lastmod>2019-06-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/</loc>
     <lastmod>2019-06-29T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/representation-learning/</loc>
+    <lastmod>2019-06-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>adversarial examples | Tao Wu</title>
+    <link>/tag/adversarial-examples/</link>
+      <atom:link href="/tag/adversarial-examples/index.xml" rel="self" type="application/rss+xml" />
+    <description>adversarial examples</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2018-2020 Tao Wu</copyright><lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>adversarial examples</title>
+      <link>/tag/adversarial-examples/</link>
+    </image>
+    
+    <item>
+      <title>Adversarial examples</title>
+      <link>/post/adv/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/adv/</guid>
+      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of the confidence in even state of the art DL models. In this post, let&amp;rsquo;s see some methods of generating and defensing adversarial examples.&lt;/p&gt;
+&lt;p&gt;An adversarial example is a sample of input data which has been modified very slightly in a way that the modification are imperceptible to human but can easily fool deep neural networks.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
