@@ -233,6 +233,7 @@ F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ \log D _ { \omega } 
 \end{align}
 $$&lt;/p&gt;
 &lt;p&gt;as a special instance of f-GAN objective.&lt;/p&gt;
+&lt;p&gt;The density ratio estimation can be further categorized into three general approaches: class-probability estimation, divergence minimisation and ratio matching&lt;/p&gt;
 &lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;
