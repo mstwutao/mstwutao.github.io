@@ -264,42 +264,46 @@ $$&lt;/p&gt;
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       <guid>/post/vae/</guid>
       <description>&lt;p&gt;Variational Autoencoder (VAE) can be seen as a stochastic version of conventional autoencoder which imposes some constraints on the distribution of latent variables, however, the original VAE was derived from Variational Bayesian method and linked to Autoencoder just because some terms in objective function can be interpreted as an encoder and a decoder.&lt;/p&gt;
-&lt;p&gt;Let&amp;rsquo;s first derive VAE from scratch and then we see how to implement it in Tensorflow.&lt;/p&gt;
-&lt;p&gt;As a kind of generative model, VAE aims to learn the underlying distribution of dataset which is unknown to us and maybe very complex. A common &amp;lsquo;distance&amp;rsquo; measure of two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which is defined to be&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first derive VAE from scratch and then we see how to implement it in Tensorflow 2.&lt;/p&gt;
+&lt;p&gt;As a kind of generative model, VAE aims to learn the underlying distribution of dataset $q(x)$ which is unknown to us and maybe very complex. In statistics, we often use some parametric distribution family as an approximation of the target distribution, then we can calculate some notion of &amp;ldquo;distance&amp;rdquo; of the parametric distribution family $p_{\theta}(x)$ and the target distribution which can be minimized using optimization methods. In this way we obtain the optimal approximated distribution through the lens of optimization:&lt;/p&gt;
+&lt;p&gt;$$
+\min_{\theta \in \Theta} d(q(x), p_{\theta}(x))
+$$&lt;/p&gt;
+&lt;p&gt;A common &amp;lsquo;distance&amp;rsquo; measure of two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which is defined to be&lt;/p&gt;
 &lt;p&gt;$$
 \mathcal { D } _ { \mathrm { KL } } [ p ( x ) || q ( x ) ] = \mathbb { E } _ { p ( x ) } \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
 $$&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Note: the KL divergence is not symmetrical, we will explore their difference in later blogs&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.&lt;/p&gt;
+&lt;p&gt;So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model and we are trying to optimize them. Thus our objective is:&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
-\mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] &amp;amp; = \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\                       &amp;amp; = - H , [ q (x) ] - \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
+\mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] &amp;amp; = \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\                       &amp;amp; = - H  [ q (x) ] - \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
 \end{align}
 $$&lt;/p&gt;
-&lt;p&gt;Note that $q(x)$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $q(x)$ is a constant, so&lt;/p&gt;
+&lt;p&gt;Note that $q(x)$ is the underlying and unchanging distribution from which our dataset comes, so the entropy $H  [ q (x) ]$ is a constant, we obtain&lt;/p&gt;
 &lt;p&gt;$$
 \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] = \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x ) \right]
 $$&lt;/p&gt;
 &lt;p&gt;See what? &lt;strong&gt;Minimize the KL divergence of the data distribution and model distribution is equivalent to maximum likelihood method.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;VAE is a latent variable generative model which learns the distribution of data space $x \in \mathcal { X }$ from a latent space $z \in \mathcal { Z }$, we can define a prior of latent space $p(z)$, which is usually a standard normal distribution, then we can model the data distribution with a complex conditional distribution $p _ { \theta } ( x | z )$, so the model data likelihood can be computed as&lt;/p&gt;
 &lt;p&gt;$$p _ { \theta } ( x ) = \int _ { z } p _ { \theta } ( x | z ) p ( z ) \mathrm { d } z$$&lt;/p&gt;
-&lt;p&gt;However, direct maximization of the likelihood is intractable because the intergration. VAE instead optimizes a lower bound of $p _ { \theta } ( x )$, we can derive it using Jenson&amp;rsquo;s Inequality:&lt;/p&gt;
+&lt;p&gt;However, direct maximization of the likelihood is intractable because the intergration. In this situation, Variational Inference optimizes a lower bound of $p _ { \theta } ( x )$ instead and VAE inherit this strategy. We see how to derive it using Jenson&amp;rsquo;s Inequality:&lt;/p&gt;
 &lt;p&gt;If $f$ is a convex function and $X$ is a random variable, then&lt;/p&gt;
 &lt;p&gt;$$
 E f ( X ) \geq f ( E X )
 $$&lt;/p&gt;
-&lt;p&gt;the equality holds only when $X = E X$, i.e,&lt;/p&gt;
+&lt;p&gt;the equality holds only when $X = E X$.&lt;/p&gt;
 &lt;p&gt;In our case,&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
 \log p _ {\theta} ( x ) &amp;amp; = \log \int _ { z } p _ { \theta } ( x , z ) \mathrm { d } z  \\  &amp;amp; = \log \int _ { z } q _ { \phi } ( z | x )  [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \mathrm { d } z \\ &amp;amp; = \log \mathbb { E } _ { q _ { \phi } ( z | x) } [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \\ &amp;amp; \geq \mathbb { E } _ { q _ { \phi } ( z | x) } \log [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}]
 \end{align}
 $$&lt;/p&gt;
-&lt;p&gt;The last line of the derivation is called the &lt;strong&gt;Evidence Lower BOund (ELBO)&lt;/strong&gt;, which is used frequently in Variational Inference. It seems confusing what is $q _ { \phi } ( z | x)$? Actually it is an approximate distribution of true posterior $p _ {\theta} ( z | x)$ of latent variable $z$ given datapoint $x$. Let&amp;rsquo;s see where it comes from.&lt;/p&gt;
-&lt;p&gt;Maybe you have heard of VAE is a generative model, actually it is an instance of Variational Inference family, it is used to perform inference of the data in the first place. Given a raw datapoint $x$, how to learn its representations $z$ like shape, size, category, etc. The posterior of latent variables $p _ { \theta } ( z  | x  ) = p _ { \theta  } ( x  |  z  ) p ( z  ) / p _ { \theta } ( x )$ is also intractable because $p _ { \theta } ( x )$ is intractable as we have discussed. VAE introduced a recognition model $q _ { \phi } (z|x)$ to approximate the true postrior $p _ { \theta } ( z | x )$. Similarly, we aims to minimize the KL divergence between them:&lt;/p&gt;
+&lt;p&gt;The last line of the derivation is due to the concavity of $log$ function, $\mathbb { E } _ { q _ { \phi } ( z | x) } \log [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}]$ called the &lt;strong&gt;Evidence Lower BOund (ELBO)&lt;/strong&gt;, which is used frequently in Variational Inference. It seems confusing what is $q _ { \phi } ( z | x)$? Actually it is an approximate distribution of true posterior $p _ {\theta} ( z | x)$ of latent variable $z$ given datapoint $x$. Let&amp;rsquo;s see where it comes from.&lt;/p&gt;
+&lt;p&gt;You have heard of VAE is a generative model, it is also an instance of Variational Inference class, i.e., it is used to perform inference of the data. Given a raw datapoint $x$, how to learn its representations $p(z|x)$. However, in the parametric setting, the posterior of latent variables $p _ { \theta } ( z  | x  ) = p _ { \theta  } ( x  |  z  ) p ( z  ) / p _ { \theta } ( x )$ is also intractable because $p _ { \theta } ( x )$ is intractable as we have discussed. VAE introduced a recognition model $q _ { \phi } (z|x)$ to approximate the true postrior $p _ { \theta } ( z | x )$. Similarly, we aims to minimize the KL divergence between them:&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
-\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( z | x ) \right] \\                       &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( x | z ) - \log  p ( z ) \right] + \log p _ { \theta } ( x )  \\                                                                                        &amp;amp; = - \mathrm { ELBO } + \log p _ { \theta } ( x )
+\mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ] &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( z | x ) \right] \\                       &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( x , z ) \right] + \log p _ { \theta } ( x )  \\                                                                                        &amp;amp; = - \mathrm { ELBO } + \log p _ { \theta } ( x )
 \end{align}
 $$&lt;/p&gt;
 &lt;p&gt;$\log p _ { \theta } (x)$ out of expectation because it does not depend on $z$, rearranging thte equation we obtain&lt;/p&gt;
@@ -307,19 +311,19 @@ $$&lt;/p&gt;
 \mathrm { ELBO } = \log p _ { \theta } (x) - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ]
 $$&lt;/p&gt;
 &lt;p&gt;Surprise! We get the same objective, maximize the ELBO is equavalent to minimize the KL divergence between $q _ { \phi } ( z | x )$ and $p _ {\theta} ( z | x )$ and at the same time maximize $\log p _ { \theta } (x)$.&lt;/p&gt;
-&lt;p&gt;So, all the remaining is to maxmize the ELBO, which is tractable under some weak assumptions, let&amp;rsquo;s see how to deal with it.&lt;/p&gt;
+&lt;p&gt;So, all the remaining is to maxmize the ELBO, which is tractable under some weak assumptions, let&amp;rsquo;s see how to deal with it. We can rewrite the ELBO as:&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
 \mathrm { ELBO } &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) + \log  p ( z ) - \log q _ { \phi } ( z | x ) \right] \\     &amp;amp; = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log  p _ {\theta} ( x | z ) \right] - \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p ( z ) ]
 \end{align}
 $$&lt;/p&gt;
-&lt;p&gt;The first term on RHS is actually the reconstruction error, which is MSE for real value data or cross-entropy for binary value data. The second term is the KL divergence of approximate posterior and prior of latent variables $z$, which can be computed analytically. From the objective function we can see two things:&lt;/p&gt;
+&lt;p&gt;The first term on RHS is actually the negative reconstruction error, which is MSE for real value data or cross-entropy for binary value data. The second term is the KL divergence of approximate posterior and prior of latent variables $z$, which can be computed analytically in some simple settings. From the objective function we can see two things:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;What is  $q _ { \phi } ( z | x )$, given $x$, compute the distribution of $z$; what is $p _ {\theta} ( x | z )$, given $z$, compute the distribution of $x$, if both are implemented by neural network, then they are the encoder and decoder of an Autoencoder, respectively. Now, get the name?&lt;/p&gt;
+&lt;p&gt;What is  $q _ { \phi } ( z | x )$, given $x$, compute the distribution of $z$, what is $p _ {\theta} ( x | z )$, given $z$, compute the distribution of $x$, if both are implemented by neural network, then they are the encoder and decoder of an Autoencoder, respectively. That&amp;rsquo;s where the name Variational Autoencoder comes from.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;Why VAE can generate new data while conventional Autoencoders fail: The first term in the objective is the same as convetional Autoencoder if implemented deterministically, the secret is the second term, VAE forces the mapping from data to latent variables to be as close as a prior, so any time we sample a latent variable from the prior, the decoder knows what to generate, while conventional Autoencoder distribute the latent varibles randomly, there are many gaps between them, if we sample a latent variable from the gap and feed to decoder, the decoder has no idea of it.&lt;/p&gt;
+&lt;p&gt;Why VAE can generate new data while conventional Autoencoders fail: The first term in the objective is the same as conventional Autoencoder if implemented as a deterministic autoencoder, the secret is the second term, VAE forces the mapping from data to latent variables to be as close as a prior, so every part of the latent distribution correspond to a part of data, any time we sample a latent variable from the prior, the decoder knows what to generate, while conventional Autoencoder distribute the latent varibles randomly, there are many gaps between them, if we sample a latent variable from the gap and feed to decoder, the decoder has no idea of it.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Before we implemented VAE, there are still several thing to do.&lt;/p&gt;
@@ -358,75 +362,87 @@ $$&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;There are several important estimators in machine learning area, we will explore that in later blog.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;All right, everything is done, the following codes snippets will help to understand the theory discussed above.&lt;/p&gt;
 &lt;p&gt;First implement encoder network, taking data $x$ as input, output is the mean and standard deviation of $ q _ {\phi} (z | x)$&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def encoder(self, x, is_training=True, reuse=False):
-    with tf.variable_scope(&#39;encoder&#39;, reuse=reuse):
-        # 1st convolutional layer
-        conv1 = tf.layers.conv2d(inputs=x, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
-        lr_conv1 = tf.nn.leaky_relu(conv1)
-        #2nd convolutional layer
-        conv2 = tf.layers.conv2d(inputs=lr_conv1, filters=128, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
-        lr_conv2 = tf.nn.leaky_relu(tf.layers.batch_normalization(conv2, training = is_training))
-        # flatten the convolutional layer
-        flat = tf.layers.flatten(lr_conv2)
-        #flat = tf.reshape(lr_conv2, [self.batch_size, -1])
-        # 1st fully-connected layer
-        fc1 = tf.layers.dense(flat, units=1024)
-        lr_fc1 = tf.nn.leaky_relu(tf.layers.batch_normalization(fc1, training = is_training))
-        # output layer
-        out = tf.layers.dense(lr_fc1, units=2*self.z_dim)
-        # The mean parameter is unconstrained
-        mean = out[:, :self.z_dim]
-        # The standard deviation must be positive. Parametrize with a softplus and
-        # add a small epsilon for numerical stability
-        stddev = 1e-6 + tf.nn.softplus(out[:, self.z_dim:])
-        return mean, stddev
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class Encoder(tf.keras.Model):
+    def __init__(self, config):
+        super(Encoder, self).__init__()
+        self.config = config
+        self.latent_dim = self.config.latent_dim
+        self.enc = Sequential([
+            layers.InputLayer(input_shape=(32, 32, 1)),
+            layers.Conv2D(filters=32, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.ReLU(),
+            layers.Conv2D(filters=64, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.ReLU(),
+            layers.Conv2D(filters=64, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.ReLU(),
+            layers.Flatten(),
+            layers.Dense(1024),
+            layers.ReLU(),
+            layers.Dense(2 * self.latent_dim),
+            ])
+
+    def call(self, x):
+        mean = self.enc(x)[:, :self.latent_dim]
+        log_var = self.enc(x)[:, self.latent_dim:]
+        return mean, log_var
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Then implement the decoder network, taking latent variables $z$ as input, output the Bernoulli parameter.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def decoder(self, z, is_training=True, reuse=False):
-    with tf.variable_scope(&#39;decoder&#39;, reuse=reuse):
-        # 1st fully-connected layer
-        fc1 = tf.layers.dense(z, units=1024)
-        r_fc1 = tf.nn.relu(tf.layers.batch_normalization(fc1, training=is_training))
-        # 2nd fully-connected layer
-        fc2 = tf.layers.dense(r_fc1, units=8 * 8 * 128)
-        r_fc2 = tf.nn.relu(tf.layers.batch_normalization(fc2, training=is_training))
-        # reshape the fully-connected layer
-        deflat = tf.reshape(r_fc2, [-1, 8, 8, 128])
-        # 1st deconvolutional layer
-        deconv1 = tf.layers.conv2d_transpose(inputs=deflat, filters=64, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
-        r_deconv1 = tf.nn.relu(tf.layers.batch_normalization(deconv1, training=is_training))
-        # output layer
-        deconv_out = tf.layers.conv2d_transpose(inputs=r_deconv1, filters=1, kernel_size=[4, 4], strides=(2, 2), padding=&#39;same&#39;)
-        out = tf.nn.sigmoid(deconv_out)
-        return out
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class Decoder(tf.keras.Model):
+    def __init__(self, config):
+        super(Decoder, self).__init__()
+        self.config = config
+        self.dec = Sequential([
+            layers.InputLayer(input_shape=(self.config.latent_dim,)),
+            layers.Dense(1024),
+            layers.ReLU(),
+            layers.Dense(4 * 4 * 64),
+            layers.ReLU(),
+            layers.Reshape((4, 4, 64)),
+            layers.Conv2DTranspose(filters=64, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.ReLU(),
+            layers.Conv2DTranspose(filters=32, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.ReLU(),
+            layers.Conv2DTranspose(filters=1, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            ])
+
+    def call(self, z):
+        x_logit = self.dec(z)
+        x = tf.nn.sigmoid(x_logit)
+        return x_logit, x
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can see how reparameteration trick works and how to implement the objective.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def build_model(self):
-    # placeholder
-    self.input_x = tf.placeholder(dtype = tf.float32, shape = [None] + self.image_dim, name = &#39;input_x&#39;)
-    self.input_z = tf.placeholder(dtype = tf.float32, shape = [None, self.z_dim], name = &#39;input_z&#39;)
-    # encoding 
-    mu, sigma = self.encoder(self.input_x, is_training = True, reuse = False)
-    # reparameterize
-    z = mu + sigma * tf.random_normal(tf.shape(mu), 0, 1, dtype = tf.float32)
-    # decoding 
-    outputs = self.decoder(z, is_training = True, reuse = False)
-    self.outputs = tf.clip_by_value(outputs, 1e-8, 1 - 1e-8)
-    # loss 
-    self.nll = -tf.reduce_mean(tf.reduce_sum(self.input_x * tf.log(self.outputs) 
-        + (1 - self.input_x) * tf.log(1 - self.outputs), [1, 2]))
-    self.KL_div = tf.reduce_mean(0.5 * tf.reduce_sum(tf.square(mu) + tf.square(sigma) 
-        - tf.log(1e-8 + tf.square(sigma)) - 1, [1]))
-    ELBO = -(self.nll + self.KL_div)
-    self.loss = -ELBO
-    # optimizer
-    t_vars = tf.trainable_variables()
-    with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-        self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss, var_list = t_vars)
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class VAE(object):
+    def __init__(self, config):
+        self.config = config
+        self.enc = Encoder(self.config)
+        self.dec = Decoder(self.config)
+        self.optim = tf.keras.optimizers.Adam(self.config.learning_rate, 0.5)
+
+    def reparameterize_normal(self, mean, logvar):
+        std = tf.math.exp(0.5 * logvar)
+        eps = tf.random.normal(std.shape)
+        return mean + std * eps
+
+    def loss(self, x_batch):
+        mean, logvar = self.enc(x_batch)
+        z = self.reparameterize_normal(mean, logvar)
+        x_logit, x_rec = self.dec(z)
+
+        # Reconstruction loss term
+        cross_ent = tf.nn.sigmoid_cross_entropy_with_logits(logits=x_logit, labels=x_batch)
+        rec_loss = tf.reduce_mean(tf.reduce_sum(cross_ent, axis=[1, 2, 3]))
+
+        # KL divergence loss term
+        kl_normal = tf.reduce_mean(0.5 * tf.reduce_sum(tf.math.square(mean) + tf.math.exp(logvar) - logvar - 1, axis=[1]))
+
+        tot_loss = rec_loss + kl_normal
+        return tot_loss
 
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The full codes can be found at 
+&lt;a href=&#34;https://github.com/hustwutao/VAE&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/hustwutao/VAE&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;
