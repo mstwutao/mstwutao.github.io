@@ -17,9 +17,57 @@
       <link>/post/adv/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       <guid>/post/adv/</guid>
-      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of the confidence in even state of the art DL models. In this post, let&amp;rsquo;s see some methods of generating and defensing adversarial examples.&lt;/p&gt;
-&lt;p&gt;An adversarial example is a sample of input data which has been modified very slightly in a way that the modification are imperceptible to human but can easily fool deep neural networks.&lt;/p&gt;
-&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments such as autonomous driving, healthcare and finance systems, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of our confidence in even state of the art DL models. In this post, I will briefly reviewing some representative attack and defense methods following 
+&lt;a href=&#34;https://arxiv.org/pdf/1912.11852.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Dong, et al.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;An adversarial example is a sample of input data which has been modified very slightly in a way that the modifications are imperceptible to human but can easily fool DL models. The term was introduced in 
+&lt;a href=&#34;https://arxiv.org/pdf/1312.6199.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Szegedy, et al.&lt;/a&gt; in the context of neural networks for image classification, now people can apply adversarial attacks in other areas like object detection, semantic segmentation, speech recognition, deep reinforcement learning, natural language processing, and generative models, etc. Adversarial examples fall into the machine learning security field and have many interesting properties. In the following, we will discuss adversarial examples from four perspective: &lt;strong&gt;attack methods&lt;/strong&gt;, &lt;strong&gt;defense methods&lt;/strong&gt;, &lt;strong&gt;properties of adversarial examples&lt;/strong&gt; and &lt;strong&gt;mechanism of adversarial examples&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Before delve into our discussion of adversarial attack and defense, we need to define the 
+&lt;a href=&#34;https://arxiv.org/pdf/1902.06705.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;strong&gt;threat model&lt;/strong&gt;&lt;/a&gt;, which specify the adversary’s goals, capabilities, and knowledge about the target models and defense strategy. Precisely defining threat models is fundamental to perform adversarial robustness evaluations.&lt;/p&gt;
+&lt;h3 id=&#34;threat-model&#34;&gt;Threat model&lt;/h3&gt;
+&lt;p&gt;Here we will focus on image classification only, let $C(\boldsymbol{x}): \mathcal{X} \rightarrow \mathcal{Y},$ denoted the classifier, where $\boldsymbol{x} \in \mathcal{X} \subset \mathbb{R}^{d}$ is the input, and $y \in \mathcal{Y}={1,2, \ldots, L}$ is the ground-truth label of $\boldsymbol{x},$ with $L$ being the number of classes. Let $\boldsymbol{x}^{a d v}$ denote an adversarial example for $\boldsymbol{x}$.&lt;/p&gt;
+&lt;h4 id=&#34;adversarys-goals&#34;&gt;Adversary’s Goals&lt;/h4&gt;
+&lt;p&gt;In image classification, the main goals of an adversary are &lt;strong&gt;untargeted&lt;/strong&gt; and &lt;strong&gt;targeted&lt;/strong&gt; attacks. An untargeted adversarial example aims to cause random misclassification of the classifier as $C\left(\boldsymbol{x}^{a d v}\right) \neq y$ while a targeted one is crafted to be misclassified by the classifier as the adversary-desired target class as $C\left(\boldsymbol{x}^{a d v}\right)=y^{*}$.&lt;/p&gt;
+&lt;h4 id=&#34;adversarys-capabilities&#34;&gt;Adversary’s Capabilities&lt;/h4&gt;
+&lt;p&gt;Adversarial examples are constrained to be almost indistinguishable from the corresponding original ones to human eyes thus the adversary can only make small changes to the inputs. The small perturbation is usually measured by the $\ell_{p}$ norm, especially the $\ell_{\infty}$ and $\ell_{2}$ norms. In this way, the construction of adversarial examples can be casted as a constrained optimization problem by maximizing the loss function $J$ of classifier such as the cross-entropy loss:&lt;/p&gt;
+&lt;p&gt;\begin{equation}\boldsymbol{x}^{a d v}=\underset{\left|\boldsymbol{x}^{\prime}-\boldsymbol{x}\right|_ {p} \leq \epsilon}{\arg \max } J\left(\boldsymbol{x}^{\prime}, y\right)\end{equation}&lt;/p&gt;
+&lt;h4 id=&#34;adversarys-knowledge&#34;&gt;Adversary’s Knowledge&lt;/h4&gt;
+&lt;p&gt;From total white-box access to the model information to only black-box access to the model predictions, adversary can have different levels of knowledge of the target model, roughly there are four attack scenarios:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;white-box attacks&lt;/strong&gt;: Full knowledge including architecture, parameters, gradient and defense mechanism.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;score-based black-box attacks&lt;/strong&gt;: Have knowledge about the output probabilities by querying the target model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;decision-based black-box attacks&lt;/strong&gt;: Have knowledge about the predicted class by querying the target model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;transfer-based black-box attacks&lt;/strong&gt;: No information of the model but assume the availability of the training data, attacking based only on the transferability of adversarial examples.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;attack-methods&#34;&gt;Attack Methods&lt;/h3&gt;
+&lt;p&gt;Following the discussion above, let&amp;rsquo;s dive into the four kinds of attack methods step by step, each comprises several representative approaches and we will make a demo for each approach.&lt;/p&gt;
+&lt;h4 id=&#34;white-box-attacks&#34;&gt;white-box attacks&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1412.6572.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Fast Gradient Sign Method (FGSM)&lt;/a&gt;.
+This method is the most widely used one and has many variates, it constructs adversarial examples as follows:
+$$
+\boldsymbol{x}^{adv}=\boldsymbol{x}+\epsilon \cdot \operatorname{sign}\left(\nabla_{\boldsymbol{x}} J(\boldsymbol{x}, y)\right)
+$$
+where $\epsilon$ is the magnitude of the perturbation, FGSM meets the $L_{\infty}$ norm bound $|\boldsymbol{x}^{adv}-\boldsymbol{x}| _ {\infty} \leq \epsilon$.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;FGSM is intuitive since we want to make our model misclassify the input, we can update the input image towards the gradients of the loss with respect to the input image to maximize the loss, and this update is very fast because only one backprop is needed.&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;
+&lt;p&gt;Basic Iterative Method (BIM).
+BIM extends FGSM by running for multiple iterations which can be expressed as:
+$$\boldsymbol{x} _ {0}^{adv}=\boldsymbol{x}, \quad \boldsymbol{x} _ {t+1} ^ {adv} = \boldsymbol{x} _ {t} ^ {adv} + \alpha \cdot \operatorname{sign}\left(\nabla _ {\boldsymbol{x}} J\left(\boldsymbol{x} _ {t}^{adv}, y\right)\right)$$
+To satisfy the $L_{\infty}$ bound, need to $\operatorname{set} \alpha=\epsilon / T$ with $T$ being the number of iterations.&lt;br&gt;
+Similar to BIM, Projected Gradient Descent (PGD) acts as a universal first-order adversary with random starts.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The Carlini &amp;amp; Wagner’s method (C&amp;amp;W) takes a Lagrangian form and adopts Adam for optimization.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;score-based-black-box-attacks&#34;&gt;score-based black-box attacks&lt;/h4&gt;
+&lt;h4 id=&#34;decision-based-black-box-attacks&#34;&gt;decision-based black-box attacks&lt;/h4&gt;
+&lt;h4 id=&#34;transfer-based-black-box-attacks&#34;&gt;transfer-based black-box attacks&lt;/h4&gt;
+&lt;h3 id=&#34;defense-methods&#34;&gt;Defense Methods&lt;/h3&gt;
+&lt;h4 id=&#34;adversarial-training&#34;&gt;adversarial training&lt;/h4&gt;
 </description>
     </item>
     
