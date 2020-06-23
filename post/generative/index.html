@@ -27,10 +27,10 @@
   
     
   
-  <meta name="description" content="Introduction and Tutorial of Generative Adversarial Networks">
+  <meta name="description" content="Introduction and Tutorial of Deep Generative Models">
 
   
-  <link rel="alternate" hreflang="en-us" href="/post/gan/">
+  <link rel="alternate" hreflang="en-us" href="/post/generative/">
 
   
 
@@ -220,7 +220,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
 
-  <link rel="canonical" href="/post/gan/">
+  <link rel="canonical" href="/post/generative/">
 
   
   
@@ -235,15 +235,15 @@
   <meta property="twitter:card" content="summary_large_image">
   
   <meta property="og:site_name" content="Tao Wu">
-  <meta property="og:url" content="/post/gan/">
-  <meta property="og:title" content="Generative Adversarial Networks | Tao Wu">
-  <meta property="og:description" content="Introduction and Tutorial of Generative Adversarial Networks"><meta property="og:image" content="/post/gan/featured.png">
-  <meta property="twitter:image" content="/post/gan/featured.png"><meta property="og:locale" content="en-us">
+  <meta property="og:url" content="/post/generative/">
+  <meta property="og:title" content="Deep Generative Models | Tao Wu">
+  <meta property="og:description" content="Introduction and Tutorial of Deep Generative Models"><meta property="og:image" content="/post/generative/featured.PNG">
+  <meta property="twitter:image" content="/post/generative/featured.PNG"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2016-04-20T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2020-05-24T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2019-06-29T00:00:00&#43;00:00">
   
 
   
@@ -267,16 +267,16 @@
   "@type": "BlogPosting",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "/post/gan/"
+    "@id": "/post/generative/"
   },
-  "headline": "Generative Adversarial Networks",
+  "headline": "Deep Generative Models",
   
   "image": [
-    "/post/gan/featured.png"
+    "/post/generative/featured.PNG"
   ],
   
   "datePublished": "2016-04-20T00:00:00Z",
-  "dateModified": "2020-05-24T00:00:00Z",
+  "dateModified": "2019-06-29T00:00:00Z",
   
   "author": {
     "@type": "Person",
@@ -291,7 +291,7 @@
       "url": "/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png"
     }
   },
-  "description": "Introduction and Tutorial of Generative Adversarial Networks"
+  "description": "Introduction and Tutorial of Deep Generative Models"
 }
 </script>
 
@@ -309,7 +309,7 @@
 
 
 
-  <title>Generative Adversarial Networks | Tao Wu</title>
+  <title>Deep Generative Models | Tao Wu</title>
 
 </head>
 
@@ -542,10 +542,10 @@
 
 
 <div class="article-container pt-3">
-  <h1>Generative Adversarial Networks</h1>
+  <h1>Deep Generative Models</h1>
 
   
-  <p class="page-subtitle">Introduction and Tutorial of Generative Adversarial Networks</p>
+  <p class="page-subtitle">Introduction and Tutorial of Deep Generative Models</p>
   
 
   
@@ -574,7 +574,7 @@
           Last updated on
       
     
-    May 24, 2020
+    Jun 29, 2019
   </span>
   
 
@@ -591,7 +591,7 @@
   
   
   <span class="middot-divider"></span>
-  <a href="/post/gan/#disqus_thread"></a>
+  <a href="/post/generative/#disqus_thread"></a>
   
 
   
@@ -621,10 +621,10 @@
 </div>
 
 
-<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 422px;">
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 371px;">
   <div style="position: relative">
-    <img src="/post/gan/featured_hu5d4ac23bd77a1fe9cd203a6d4fba29ac_162105_720x0_resize_lanczos_2.png" alt="" class="featured-image">
-    <span class="article-header-caption">Image credit: <a href="https://thedatascientist.com/limits-ai-creativity/"><strong>The Data Scientist</strong></a></span>
+    <img src="/post/generative/featured_hu1b783b0216289d872d43de41c196fd27_56236_720x0_resize_lanczos_2.PNG" alt="" class="featured-image">
+    <span class="article-header-caption">Image credit: <a href="https://openai.com/blog/generative-models/"><strong>OpenAI</strong></a></span>
   </div>
 </div>
 
@@ -633,139 +633,90 @@
   <div class="article-container">
 
     <div class="article-style">
-      <p>Generative Adversarial Networks(GAN) [1] has become one of the most powerful techniques in machine learning since its emergence in 2014. The interesting idea of training methods and the flexible design of the objective function make GAN have numerous variants, and these variants even consist of a 
-<a href="https://deephunt.in/the-gan-zoo-79597dc8c347" target="_blank" rel="noopener">GAN zoo</a>.</p>
-<p>Let&rsquo;s first interpret GAN from perspectives and then see how to implement GAN in Tensorflow 2:</p>
-<h2 id="game-theory">Game Theory</h2>
-<p>GAN consists of two models: a generative model $G$ that tries to generate realistic samples, and a discriminative model $D$ that tries to classify data from $G$ or from dataset. The training procedure for $G$ is to maximize the probability of $D$ making a mistake, and $D$ is to maximize the probability of correctly classify all samples it receives. This framework corresponds to a minimax two-player game, the generative model can be thought of as analogous to a team of counterfeiters, trying to produce fake currency and use it without detection, while the discriminative model is analogous to the police, trying to detect the counterfeit currency. Competition in this game drives both teams to improve their methods until the counterfeits are indistiguishable from the genuine articles.</p>
-<p>Let&rsquo;s formulate GAN in mathematics now. Both $G : Z \rightarrow X$ and $D : X \rightarrow [0, 1]$ are represented by neural networks, like other common generative models, $G$ takes vectors of noise $z \sim p(z)$ as input, the output $G(z)$ are the fake samples with the same size as data from dataset, $D$ recieves samples from both dataset and $G$, and it outputs the probability of the samples it receives are real, i.e., from dataset.</p>
-<p>Hence, the objective of $D$ is:</p>
+      <p>Generative models can be used for data compression, denoising, inpainting, image synthesis, semi-supervised learning, unsupervised representation learning, and other tasks. There are many kinds of generative models, and among which GAN, VAE and autoregressive models are the most popular ones. A great blog on 
+<a href="https://openai.com/blog/generative-models/" target="_blank" rel="noopener">Generative Models</a> written by OpenAI is worth reading at length. In this blog, we mainly discuss generative models from a divergence minimization perspective.</p>
+<p>Generative models, as its name explains, it can be used to generate data, the prerequisite is to understand the training dataset, i.e, learn the distribution of the dataset. In order to match model distribution $p _ { \theta } (x)$ to the true data distribution $q(x)$, generative models usually estimate a discrepancy (sometimes we call it distance, divergence)  measure $ d(p _ { \theta } (x), q(x))$ and optimize the model parameters $\theta$ to minimize this discrepancy. However we don&rsquo;t have access to the underlying true data distribution, we only have samples from it (the dataset), so we use this empirical distribution as a surrogate for true data distribution. The wish is that if the model is correct, and for extremely large amounts of data, the model distribution will recover the true data distribution.</p>
+<p>There are many concepts of measuring the discrapency between two distributions, in practice, we have only finite data from the dataset and follow some tractable assumptions about the distribution, hence there is often a mismatch between the data distribution and the model distribution, and different discrapency minimization can lead to very different results. Following [1], these discrepancy measures can be casted into three categories: information-theoretic divergences, integral probability metrics, and Hilbert space discrepancy metrics. Now we have a closer look at how to estimate these different measures and what different results we get.</p>
+<p>*Note: Divergences are a weak form of distance between two probability distributions with the two properties:</p>
+<ol>
+<li>Non-negative</li>
+<li>Equal to zero if and only if the distributions are equal.
+we do not require them to be symmetric and follow triangle inequality.*</li>
+</ol>
+<h2 id="information-theoretic-divergences">Information-theoretic divergences</h2>
+<p>In this part, we mainly consider Information-theoretic divergences, f-divergence family, which contains some often used divergence like Kullback-Leibler (KL) divergence and Jensen-Shannon (JS) divergence.</p>
+<h3 id="kl-divergence">KL-divergence</h3>
+<p>KL-divergence is not symmetric, depending on the ordering, we will obtain two different measures. We firstly show their difference from analysis and a toy example and then discuss some applications of both cases.</p>
+<h5 id="minimize-forward-kl-divergence">Minimize Forward KL-divergence</h5>
+<p>Forward KL-divergence means that the divergence is under the expectation of true distribution.</p>
 <p>$$
 \begin{align}
-V(D) = \max  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\theta ^ { * } &amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ q ( x ) || p _ {\theta} ( x ) ] \\  &amp; = \arg \min _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log   q ( x )  - \log  p _ {\theta} ( x )  \right] \\ &amp; = \arg \max _ { \theta } \mathbb { E } _ { q ( x ) } \left[ \log p _ {\theta} ( x )  \right]
 \end{align}
 $$</p>
-<p>The objective of $G$ is:</p>
+<p>From equation (3) we can see that if we want to maximize $\log p _ {\theta} ( x )$ under the expectation of $q(x)$, we need to avoid having near-zero probability where datapoint exists, because $\log p _ {\theta} ( x )$ will go to nagative infinity. So in this way, the model tries to cover the entire support of the true distribution, but the model could assign probability mass to regions where the true distribution has low probability (where datapoint does not exist), the consequence is the model could generate unrealistic samples.</p>
+<h5 id="minimize-reverse-kl-divergence">Minimize Reverse KL-divergence</h5>
+<p>Reverse KL-divergence means that the divergence is under the expectation of the approximate distribution.</p>
 <p>$$
 \begin{align}
-V(G) &amp; = \max  \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log (D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp; = \min  \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp; = \min  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\theta ^ { * } &amp; = \arg \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ p _ {\theta} ( x ) || q ( x ) ] \\  &amp; = \arg \min _ { \theta } \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log p _ {\theta} ( x )  -  \log q ( x ) \right] \\ &amp; = \arg \max _ { \theta } H , [ p _ {\theta} ( x ) ] + \mathbb { E } _ { p _ {\theta} ( x ) } \left[ \log q ( x )  \right]
 \end{align}
 $$</p>
-<p>The last line holds because $\mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ]$ does not depend on $G$, now we can write the objective of GAN as:</p>
+<p>From equation (3) we can see that the first term miximize the entropy of $p _ {\theta} ( x )$, it means that the model distribution should as spread out as possible, the second term means that where the model distribution have probability mass, the true data distribution should not have near-zero probability, hence the support of $p _ {\theta} ( x )$ is basically a subset of the support of $q(x)$. The consequence is that the model might not produce unrealistic samples but could suffer sample diversity because it might not capture all the modes of true data distribution.</p>
+<p><strong>Experiments</strong>: To illustrate the analysis above, let&rsquo;s see a toy example. We have some samples drawn randomly from a 1D Gaussian Mixture distribution $p(x)$, but we do not know that, and we fit a Gaussian distribution $p _ { \theta } (x)$ to these samples, the parameters in the model are the mean and variance of the Gaussian distribution. Figure 1. shows the results of minimize KL-divergence from two directions, the result proves our analysis is right: the model minimizing forward KL-divergence cover all the support of true data, but have large probability density in the middle where true data distribution has low distribution density, the samples will look unrealistic in this region. Minimizing reverse KL-divergence only capture one mode of true data distribution but seems not produce unrealistic samples.</p>
+<p><img src="./KL.png" alt="Figure 1. KL divergence minimization from two directions"></p>
+<p>As we have discussed in previous post, VAE maximizes a lower bound on data likelihood, and is equivalently minimizing the forward KL-divergence. On the contrary, Expectation Propagation (EP) minimizes the reverse KL-divergence.</p>
+<h3 id="js-divergence">JS-divergence</h3>
+<p>Inn my GAN post, we can see that the generator of GAN actually minimize the JS-divergence between</p>
+<h3 id="f-divergence">$f$-divergence</h3>
+<p>$f$-divergence is a family of a large class of different divergences depend on different $f$ functions, Kullback-Leibler divergence, Hellinger distance, JS-divergence and Kolmogorov total variation distance are some well known instances of $f$-divergence. Given two distributions $P$ and $Q$ that possess, respectively, an absolutely continuous density function $p$ and $q$ with respect to a base measure $dx$ defined on the domain $\mathcal {X}$, we define the $f$-divergence as :</p>
 <p>$$
 \begin{align}
-\min _ { G } \max _ { D } V ( D , G ) =  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+D _ { f } ( P || Q ) = \int _ { \mathcal { X } } q ( x ) f \left( \frac { p ( x ) } { q ( x ) } \right) \mathrm { d } x
 \end{align}
 $$</p>
-<h2 id="divergence-minimization">Divergence Minimization</h2>
-<p>As a generative model, $G$ tries to capture the true data distribution, hence it seeks to minimize a kind of divergence between the model distribution $p _ { g }$ and data distribution $p _ { \mathrm { data } }$. But how can $G$ achieve it?</p>
-<p>The training process of GAN is to train $G$ and $D$ in turn, when training $G$ we keep $D$ fixed and vice versa. Given a fixed $G$, what is the optimal $D$?</p>
+<p>where the function $f$ is a convex function satisfying $f(1) = 0$, by selecting different choices of $f$, some popular divergences will be recovered as special cases of $f$-divergence.</p>
+<p>f-GAN [2] proposed variational divergence minimization (VDM) to estimate $D _ { f } ( P || Q )$ given only samples from $P$ and $Q$. Every convex, lower-semicontinuous function $f$ has a convex conjugate function $ f ^ { * } $ defined as:</p>
 <p>$$
 \begin{align}
-\max _ { D } V ( D , G ) &amp; = \max \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) d x + \int _ { \boldsymbol { z } } p  ( \boldsymbol { z } ) \log ( 1 - D ( g ( \boldsymbol { z } ) ) ) d z \\ &amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) + p _ { g } ( \boldsymbol { x } ) \log ( 1 - D ( \boldsymbol { x } ) ) d x
+f ^ { * } ( t ) = \sup _ { u \in \operatorname { dom } _ { f } } [ u t - f ( u ) ]
 \end{align}
 $$</p>
-<p>Using simple calculus, we know function $ a \log ( y ) + b \log ( 1 - y )$ achieves its maximum in $[0, 1]$ at $\frac { a } { a + b }$, hence the optimal $D$ is</p>
+<p>The function $ f ^ { * } $  is again convex and lower-semicontinuous and the pair $(f, f ^ { * })$ is dual to another in the sense that $f ^ { ** }= f$. Therefore, we can also represent $f$ as</p>
 <p>$$
 \begin{align}
-D  ^ { * } ( \boldsymbol { x } ) = \frac { p _ { \text {data} } ( \boldsymbol { x } ) } { p _ { \text {data} } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) }
+f ( u ) = \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t u - f ^ { * } ( t ) ]
 \end{align}
 $$</p>
-<p>If at every step, we train $D$ to the optimum, then what will the objective of $G$ like?</p>
 <p>$$
 \begin{align}
-\min _ { G } V ( D , G ) &amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { z } \sim p (z)} \left[ \log \left( 1 - D  ^ { * } ( G ( \boldsymbol { z } ) ) \right) \right] \\ &amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \left( 1 - D ^ { * } ( \boldsymbol { x } ) \right) \right] \\ &amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } )} \left[ \log \frac { p _ { \text { data } } ( \boldsymbol { x } ) } { P _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp; + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \frac { p _ { g } ( \boldsymbol { x } ) } { p _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp; = - \log ( 4 ) + K L \left( p _ { \text { data } } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) + K L \left( p _ { g } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) \\ &amp; = - \log ( 4 ) + 2 \cdot J S D \left( p _ { \text { data } } || p _ { g } \right)
+D _ { f } ( P || Q ) &amp; = \int _ { \mathcal { X } } q ( x ) \sup _ { t \in \operatorname { dom } _ { f ^ { * } } } [ t \frac { p ( x ) } { q ( x ) } - f ^ { * } ( t ) ] \mathrm { d } x \\ &amp; \geq \sup _ { T \in \mathcal { T } } \left( \int _ { \mathcal { X } } p ( x ) T ( x ) \mathrm { d } x - \int _ { \mathcal { X } } q ( x ) f ^ { * } ( T ( x ) ) \mathrm { d } x \right) \\ &amp; = \sup _ { T \in \mathcal { T } } \left( \mathbb { E } _ { x \sim P } [ T ( x ) ] - \mathbb { E } _ { x \sim Q } \left[ f ^ { * } ( T ( x ) ) \right] \right)
 \end{align}
 $$</p>
-<p>Now we can see that $G$ is actually minimizing the Jensen– Shannon divergence between the model’s distribution and the true data distribution.</p>
-<p>All right, let&rsquo;s see the Tensorflow implementation of GAN to better understand the theory discussed above. The implementation is based on Deep Convolutional GAN (DCGAN) because the original GAN&rsquo;s training is very instable.</p>
-<h2 id="tensorflow-implementation">Tensorflow implementation</h2>
-<p>The generator part, it takes a vector of $z$ as input, output an fake sample.</p>
-<pre><code class="language-python">class Generator(tf.keras.Model):
-    def __init__(self, config):
-        super(Generator, self).__init__()
-        self.config = config
-        self.gen = Sequential([
-            layers.InputLayer(input_shape=(self.config.latent_dim,)),
-            layers.Dense(1024),
-            layers.BatchNormalization(),
-            layers.ReLU(),
-            layers.Dense(8 * 8 * 128),
-            layers.BatchNormalization(),
-            layers.ReLU(),
-            layers.Reshape((8, 8, 128)),
-            layers.Conv2DTranspose(filters=64, kernel_size=4, strides=2, padding='same'),
-            layers.BatchNormalization(),
-            layers.ReLU(),
-            layers.Conv2DTranspose(filters=1, kernel_size=4, strides=2, padding='same', activation='sigmoid'),
-            ])
-
-    def call(self, z):
-        x = self.gen(z)
-        return x
-</code></pre>
-<p>The discriminator receive an image, outputs the probability that image is real.</p>
-<pre><code class="language-python">class Discriminator(tf.keras.Model):
-    def __init__(self, config):
-        super(Discriminator, self).__init__()
-        self.config = config
-        self.dis = Sequential([
-            layers.InputLayer(input_shape=(32, 32, 1)),
-            layers.Conv2D(filters=64, kernel_size=4, strides=2, padding='same'),
-            layers.LeakyReLU(),
-            layers.Conv2D(filters=128, kernel_size=4, strides=2, padding='same'),
-            layers.BatchNormalization(),
-            layers.LeakyReLU(),
-            layers.Flatten(),
-            layers.Dense(1024),
-            layers.BatchNormalization(),
-            layers.LeakyReLU(),
-            layers.Dense(1),
-            ])
-
-    def call(self, x):
-        z = self.dis(x)
-        return z
-</code></pre>
-<p>The loss for both networks are pretty self-explainatory.</p>
-<pre><code class="language-python">class DCGAN(object):
-    def __init__(self, config):
-        self.config = config
-        self.dis = Discriminator(self.config)
-        self.gen = Generator(self.config)
-        self.d_optim = tf.keras.optimizers.Adam(self.config.d_lr, 0.5)
-        self.g_optim = tf.keras.optimizers.Adam(self.config.g_lr, 0.5)
-        self.global_step = tf.Variable(0, trainable=False)
-        self.global_epoch = tf.Variable(0, trainable=False)
-        
-    def loss(self, x_batch):
-        z = tf.random.normal([self.config.batch_size, self.config.latent_dim])
-        g_fake = self.gen(z, training=True)
-        d_fake = self.dis(g_fake, training=True)
-        d_real = self.dis(x_batch, training=True)
-        
-        BCE = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-        d_loss_real = BCE(y_true=tf.ones_like(d_real), y_pred=d_real)
-        d_loss_fake = BCE(y_true=tf.zeros_like(d_fake), y_pred=d_fake)
-        d_loss = d_loss_real + d_loss_fake
-        g_loss = BCE(y_true=tf.ones_like(d_fake), y_pred=d_fake)
-        return d_loss, g_loss
-</code></pre>
-<p>The full codes can be found at 
-<a href="https://github.com/hustwutao/DCGAN" target="_blank" rel="noopener">https://github.com/hustwutao/DCGAN</a></p>
+<p>where $\mathcal { T }$ is an arbitrary class of functions $T : \mathcal { X } \rightarrow \mathbb { R }$, the bound is tight for $T ^ { * } ( x ) = f ^ { \prime } \left( \frac { p ( x ) } { q ( x ) } \right)$.</p>
+<p>For f-GAN, which contains a generator $Q _ { \theta }$ and a discriminator $T _ { \omega }$, its objective function is</p>
+<p>$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ T _ { \omega } ( x ) \right] - \mathbb { E } _ { x \sim Q _ { \theta } } \left[ f ^ { * } \left( T _ { \omega } ( x ) \right) \right]
+\end{align}
+$$</p>
+<p>where we minimize with respect to $\theta$ and maximize with respect to $\omega$. We can see the GAN objective</p>
+<p>$$
+\begin{align}
+F ( \theta , \omega ) = \mathbb { E } _ { x \sim P } \left[ \log D _ { \omega } ( x ) \right] + \mathbb { E } _ { x \sim Q _ { \theta } } \left[ \log \left( 1 - D _ { \omega } ( x ) \right) \right]
+\end{align}
+$$</p>
+<p>as a special instance of f-GAN objective.</p>
+<p>The density ratio estimation can be further categorized into three general approaches: class-probability estimation, divergence minimisation and ratio matching</p>
 <h2 id="reference">Reference</h2>
 <ol>
 <li>
 <p>
-<a href="http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf" target="_blank" rel="noopener">Goodfellow, Ian, et al. &ldquo;Generative adversarial nets.&rdquo; Advances in neural information processing systems. 2014.</a></p>
+<a href="http://proceedings.mlr.press/v80/tao18b/tao18b.pdf" target="_blank" rel="noopener">Tao, Chenyang, et al. &ldquo;Chi-square generative adversarial network.&rdquo; International Conference on Machine Learning. 2018.</a></p>
 </li>
 <li>
 <p>
-<a href="https://arxiv.org/pdf/1809.02145.pdf" target="_blank" rel="noopener">Jolicoeur-Martineau, Alexia. &ldquo;GANs beyond divergence minimization.&rdquo; arXiv preprint arXiv:1809.02145 (2018).</a></p>
-</li>
-<li>
-<p>
-<a href="https://arxiv.org/pdf/1511.06434.pdf%C3" target="_blank" rel="noopener">Radford, Alec, Luke Metz, and Soumith Chintala. &ldquo;Unsupervised representation learning with deep convolutional generative adversarial networks.&rdquo; arXiv preprint arXiv:1511.06434 (2015).</a></p>
+<a href="http://papers.nips.cc/paper/6066-f-gan-training-generative-neural-samplers-using-variational-divergence-minimization.pdf" target="_blank" rel="noopener">Nowozin, Sebastian, Botond Cseke, and Ryota Tomioka. &ldquo;f-gan: Training generative neural samplers using variational divergence minimization.&rdquo; Advances in neural information processing systems. 2016.</a></p>
 </li>
 </ol>
 
@@ -780,6 +731,8 @@ $$</p>
 <div class="article-tags">
   
   <a class="badge badge-light" href="/tag/gan/">GAN</a>
+  
+  <a class="badge badge-light" href="/tag/vae/">VAE</a>
   
 </div>
 
@@ -796,7 +749,7 @@ $$</p>
       
       
       <li>
-        <a href="https://twitter.com/intent/tweet?url=/post/gan/&amp;text=Generative%20Adversarial%20Networks" target="_blank" rel="noopener" class="share-btn-twitter">
+        <a href="https://twitter.com/intent/tweet?url=/post/generative/&amp;text=Deep%20Generative%20Models" target="_blank" rel="noopener" class="share-btn-twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -809,7 +762,7 @@ $$</p>
       
       
       <li>
-        <a href="https://www.facebook.com/sharer.php?u=/post/gan/&amp;t=Generative%20Adversarial%20Networks" target="_blank" rel="noopener" class="share-btn-facebook">
+        <a href="https://www.facebook.com/sharer.php?u=/post/generative/&amp;t=Deep%20Generative%20Models" target="_blank" rel="noopener" class="share-btn-facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
@@ -822,7 +775,7 @@ $$</p>
       
       
       <li>
-        <a href="mailto:?subject=Generative%20Adversarial%20Networks&amp;body=/post/gan/" target="_blank" rel="noopener" class="share-btn-email">
+        <a href="mailto:?subject=Deep%20Generative%20Models&amp;body=/post/generative/" target="_blank" rel="noopener" class="share-btn-email">
           <i class="fas fa-envelope"></i>
         </a>
       </li>
@@ -835,7 +788,7 @@ $$</p>
       
       
       <li>
-        <a href="https://www.linkedin.com/shareArticle?url=/post/gan/&amp;title=Generative%20Adversarial%20Networks" target="_blank" rel="noopener" class="share-btn-linkedin">
+        <a href="https://www.linkedin.com/shareArticle?url=/post/generative/&amp;title=Deep%20Generative%20Models" target="_blank" rel="noopener" class="share-btn-linkedin">
           <i class="fab fa-linkedin-in"></i>
         </a>
       </li>
@@ -848,7 +801,7 @@ $$</p>
       
       
       <li>
-        <a href="https://web.whatsapp.com/send?text=Generative%20Adversarial%20Networks%20/post/gan/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+        <a href="https://web.whatsapp.com/send?text=Deep%20Generative%20Models%20/post/generative/" target="_blank" rel="noopener" class="share-btn-whatsapp">
           <i class="fab fa-whatsapp"></i>
         </a>
       </li>
@@ -861,7 +814,7 @@ $$</p>
       
       
       <li>
-        <a href="https://service.weibo.com/share/share.php?url=/post/gan/&amp;title=Generative%20Adversarial%20Networks" target="_blank" rel="noopener" class="share-btn-weibo">
+        <a href="https://service.weibo.com/share/share.php?url=/post/generative/&amp;title=Deep%20Generative%20Models" target="_blank" rel="noopener" class="share-btn-weibo">
           <i class="fab fa-weibo"></i>
         </a>
       </li>
@@ -993,7 +946,9 @@ $$</p>
     <h3>Related</h3>
     <ul>
       
-      <li><a href="/post/generative/">Deep Generative Models</a></li>
+      <li><a href="/post/gan/">Generative Adversarial Networks</a></li>
+      
+      <li><a href="/post/vae/">Variational Autoencoders</a></li>
       
     </ul>
   </div>

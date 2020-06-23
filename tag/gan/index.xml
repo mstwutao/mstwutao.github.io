@@ -13,20 +13,10 @@
     </image>
     
     <item>
-      <title>Disentagled representation learning</title>
-      <link>/post/disentangling/</link>
+      <title>Deep Generative Models</title>
+      <link>/post/generative/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/post/disentangling/</guid>
-      <description>&lt;p&gt;Disentangled representations are defined as ones where a change in a single unit of the representation corresponds to a change in single factor of variation of the data while being invariant to others.&lt;/p&gt;
-&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Training generative models as divergence minimization</title>
-      <link>/post/divergence/</link>
-      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/post/divergence/</guid>
+      <guid>/post/generative/</guid>
       <description>&lt;p&gt;Generative models can be used for data compression, denoising, inpainting, image synthesis, semi-supervised learning, unsupervised representation learning, and other tasks. There are many kinds of generative models, and among which GAN, VAE and autoregressive models are the most popular ones. A great blog on 
 &lt;a href=&#34;https://openai.com/blog/generative-models/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Generative Models&lt;/a&gt; written by OpenAI is worth reading at length. In this blog, we mainly discuss generative models from a divergence minimization perspective.&lt;/p&gt;
 &lt;p&gt;Generative models, as its name explains, it can be used to generate data, the prerequisite is to understand the training dataset, i.e, learn the distribution of the dataset. In order to match model distribution $p _ { \theta } (x)$ to the true data distribution $q(x)$, generative models usually estimate a discrepancy (sometimes we call it distance, divergence)  measure $ d(p _ { \theta } (x), q(x))$ and optimize the model parameters $\theta$ to minimize this discrepancy. However we don&amp;rsquo;t have access to the underlying true data distribution, we only have samples from it (the dataset), so we use this empirical distribution as a surrogate for true data distribution. The wish is that if the model is correct, and for extremely large amounts of data, the model distribution will recover the true data distribution.&lt;/p&gt;
@@ -111,6 +101,149 @@ $$&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;
 &lt;a href=&#34;http://papers.nips.cc/paper/6066-f-gan-training-generative-neural-samplers-using-variational-divergence-minimization.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Nowozin, Sebastian, Botond Cseke, and Ryota Tomioka. &amp;ldquo;f-gan: Training generative neural samplers using variational divergence minimization.&amp;rdquo; Advances in neural information processing systems. 2016.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Generative Adversarial Networks</title>
+      <link>/post/gan/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/post/gan/</guid>
+      <description>&lt;p&gt;Generative Adversarial Networks(GAN) [1] has become one of the most powerful techniques in machine learning since its emergence in 2014. The interesting idea of training methods and the flexible design of the objective function make GAN have numerous variants, and these variants even consist of a 
+&lt;a href=&#34;https://deephunt.in/the-gan-zoo-79597dc8c347&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GAN zoo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s first interpret GAN from perspectives and then see how to implement GAN in Tensorflow 2:&lt;/p&gt;
+&lt;h2 id=&#34;game-theory&#34;&gt;Game Theory&lt;/h2&gt;
+&lt;p&gt;GAN consists of two models: a generative model $G$ that tries to generate realistic samples, and a discriminative model $D$ that tries to classify data from $G$ or from dataset. The training procedure for $G$ is to maximize the probability of $D$ making a mistake, and $D$ is to maximize the probability of correctly classify all samples it receives. This framework corresponds to a minimax two-player game, the generative model can be thought of as analogous to a team of counterfeiters, trying to produce fake currency and use it without detection, while the discriminative model is analogous to the police, trying to detect the counterfeit currency. Competition in this game drives both teams to improve their methods until the counterfeits are indistiguishable from the genuine articles.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s formulate GAN in mathematics now. Both $G : Z \rightarrow X$ and $D : X \rightarrow [0, 1]$ are represented by neural networks, like other common generative models, $G$ takes vectors of noise $z \sim p(z)$ as input, the output $G(z)$ are the fake samples with the same size as data from dataset, $D$ recieves samples from both dataset and $G$, and it outputs the probability of the samples it receives are real, i.e., from dataset.&lt;/p&gt;
+&lt;p&gt;Hence, the objective of $D$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(D) = \max  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The objective of $G$ is:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+V(G) &amp;amp; = \max  \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log (D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min  \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \min  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;The last line holds because $\mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ]$ does not depend on $G$, now we can write the objective of GAN as:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } \max _ { D } V ( D , G ) =  \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;divergence-minimization&#34;&gt;Divergence Minimization&lt;/h2&gt;
+&lt;p&gt;As a generative model, $G$ tries to capture the true data distribution, hence it seeks to minimize a kind of divergence between the model distribution $p _ { g }$ and data distribution $p _ { \mathrm { data } }$. But how can $G$ achieve it?&lt;/p&gt;
+&lt;p&gt;The training process of GAN is to train $G$ and $D$ in turn, when training $G$ we keep $D$ fixed and vice versa. Given a fixed $G$, what is the optimal $D$?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\max _ { D } V ( D , G ) &amp;amp; = \max \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ] \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) d x + \int _ { \boldsymbol { z } } p  ( \boldsymbol { z } ) \log ( 1 - D ( g ( \boldsymbol { z } ) ) ) d z \\ &amp;amp; = \max \int _ { \boldsymbol { x } } p _ { \text { data } } ( \boldsymbol { x } ) \log ( D ( \boldsymbol { x } ) ) + p _ { g } ( \boldsymbol { x } ) \log ( 1 - D ( \boldsymbol { x } ) ) d x
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Using simple calculus, we know function $ a \log ( y ) + b \log ( 1 - y )$ achieves its maximum in $[0, 1]$ at $\frac { a } { a + b }$, hence the optimal $D$ is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+D  ^ { * } ( \boldsymbol { x } ) = \frac { p _ { \text {data} } ( \boldsymbol { x } ) } { p _ { \text {data} } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) }
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;If at every step, we train $D$ to the optimum, then what will the objective of $G$ like?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\min _ { G } V ( D , G ) &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { z } \sim p (z)} \left[ \log \left( 1 - D  ^ { * } ( G ( \boldsymbol { z } ) ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } ) } \left[ \log D ^ { * } ( \boldsymbol { x } ) \right] + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \left( 1 - D ^ { * } ( \boldsymbol { x } ) \right) \right] \\ &amp;amp; = \min \mathbb { E } _ { \boldsymbol { x } \sim p _ { \text { data } } ( \boldsymbol { x } )} \left[ \log \frac { p _ { \text { data } } ( \boldsymbol { x } ) } { P _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; + \mathbb { E } _ { \boldsymbol { x } \sim p _ { g } ( \boldsymbol { x } )} \left[ \log \frac { p _ { g } ( \boldsymbol { x } ) } { p _ { \text { data } } ( \boldsymbol { x } ) + p _ { g } ( \boldsymbol { x } ) } \right] \\ &amp;amp; = - \log ( 4 ) + K L \left( p _ { \text { data } } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) + K L \left( p _ { g } || \frac { p _ { \text { data } } + p _ { g } } { 2 } \right) \\ &amp;amp; = - \log ( 4 ) + 2 \cdot J S D \left( p _ { \text { data } } || p _ { g } \right)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;Now we can see that $G$ is actually minimizing the Jensen– Shannon divergence between the model’s distribution and the true data distribution.&lt;/p&gt;
+&lt;p&gt;All right, let&amp;rsquo;s see the Tensorflow implementation of GAN to better understand the theory discussed above. The implementation is based on Deep Convolutional GAN (DCGAN) because the original GAN&amp;rsquo;s training is very instable.&lt;/p&gt;
+&lt;h2 id=&#34;tensorflow-implementation&#34;&gt;Tensorflow implementation&lt;/h2&gt;
+&lt;p&gt;The generator part, it takes a vector of $z$ as input, output an fake sample.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class Generator(tf.keras.Model):
+    def __init__(self, config):
+        super(Generator, self).__init__()
+        self.config = config
+        self.gen = Sequential([
+            layers.InputLayer(input_shape=(self.config.latent_dim,)),
+            layers.Dense(1024),
+            layers.BatchNormalization(),
+            layers.ReLU(),
+            layers.Dense(8 * 8 * 128),
+            layers.BatchNormalization(),
+            layers.ReLU(),
+            layers.Reshape((8, 8, 128)),
+            layers.Conv2DTranspose(filters=64, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.BatchNormalization(),
+            layers.ReLU(),
+            layers.Conv2DTranspose(filters=1, kernel_size=4, strides=2, padding=&#39;same&#39;, activation=&#39;sigmoid&#39;),
+            ])
+
+    def call(self, z):
+        x = self.gen(z)
+        return x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The discriminator receive an image, outputs the probability that image is real.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class Discriminator(tf.keras.Model):
+    def __init__(self, config):
+        super(Discriminator, self).__init__()
+        self.config = config
+        self.dis = Sequential([
+            layers.InputLayer(input_shape=(32, 32, 1)),
+            layers.Conv2D(filters=64, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.LeakyReLU(),
+            layers.Conv2D(filters=128, kernel_size=4, strides=2, padding=&#39;same&#39;),
+            layers.BatchNormalization(),
+            layers.LeakyReLU(),
+            layers.Flatten(),
+            layers.Dense(1024),
+            layers.BatchNormalization(),
+            layers.LeakyReLU(),
+            layers.Dense(1),
+            ])
+
+    def call(self, x):
+        z = self.dis(x)
+        return z
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The loss for both networks are pretty self-explainatory.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;class DCGAN(object):
+    def __init__(self, config):
+        self.config = config
+        self.dis = Discriminator(self.config)
+        self.gen = Generator(self.config)
+        self.d_optim = tf.keras.optimizers.Adam(self.config.d_lr, 0.5)
+        self.g_optim = tf.keras.optimizers.Adam(self.config.g_lr, 0.5)
+        self.global_step = tf.Variable(0, trainable=False)
+        self.global_epoch = tf.Variable(0, trainable=False)
+        
+    def loss(self, x_batch):
+        z = tf.random.normal([self.config.batch_size, self.config.latent_dim])
+        g_fake = self.gen(z, training=True)
+        d_fake = self.dis(g_fake, training=True)
+        d_real = self.dis(x_batch, training=True)
+        
+        BCE = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+        d_loss_real = BCE(y_true=tf.ones_like(d_real), y_pred=d_real)
+        d_loss_fake = BCE(y_true=tf.zeros_like(d_fake), y_pred=d_fake)
+        d_loss = d_loss_real + d_loss_fake
+        g_loss = BCE(y_true=tf.ones_like(d_fake), y_pred=d_fake)
+        return d_loss, g_loss
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The full codes can be found at 
+&lt;a href=&#34;https://github.com/hustwutao/DCGAN&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/hustwutao/DCGAN&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://papers.nips.cc/paper/5423-generative-adversarial-nets.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Goodfellow, Ian, et al. &amp;ldquo;Generative adversarial nets.&amp;rdquo; Advances in neural information processing systems. 2014.&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1809.02145.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jolicoeur-Martineau, Alexia. &amp;ldquo;GANs beyond divergence minimization.&amp;rdquo; arXiv preprint arXiv:1809.02145 (2018).&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1511.06434.pdf%C3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Radford, Alec, Luke Metz, and Soumith Chintala. &amp;ldquo;Unsupervised representation learning with deep convolutional generative adversarial networks.&amp;rdquo; arXiv preprint arXiv:1511.06434 (2015).&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 </description>
