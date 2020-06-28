@@ -251,7 +251,7 @@ Three
       <link>/post/adv/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
       <guid>/post/adv/</guid>
-      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments such as autonomous driving, healthcare and finance systems, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of our confidence in even state of the art DL models. In this post, I will briefly reviewing some representative attack and defense methods following 
+      <description>&lt;p&gt;As deep learning (DL) being applied in many safety-critical environments such as autonomous driving, healthcare and finance systems, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of our confidence in even state of the art DL models. In this post, we will briefly reviewing some representative attack and defense methods following 
 &lt;a href=&#34;https://arxiv.org/pdf/1912.11852.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Dong, et al.&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;An adversarial example is a sample of input data which has been modified very slightly in a way that the modifications are imperceptible to human but can easily fool DL models. The term was introduced in 
 &lt;a href=&#34;https://arxiv.org/pdf/1312.6199.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Szegedy, et al.&lt;/a&gt; in the context of neural networks for image classification, now people can apply adversarial attacks in other areas like object detection, semantic segmentation, speech recognition, deep reinforcement learning, natural language processing, and generative models, etc. Adversarial examples fall into the machine learning security field and have many interesting properties. In the following, we will discuss adversarial examples from four perspective: &lt;strong&gt;attack methods&lt;/strong&gt;, &lt;strong&gt;defense methods&lt;/strong&gt;, &lt;strong&gt;properties of adversarial examples&lt;/strong&gt; and &lt;strong&gt;mechanism of adversarial examples&lt;/strong&gt;.&lt;/p&gt;
@@ -278,16 +278,18 @@ Three
 &lt;ol&gt;
 &lt;li&gt;
 &lt;a href=&#34;https://arxiv.org/pdf/1412.6572.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Fast Gradient Sign Method (FGSM)&lt;/a&gt;.
-This method is the most widely used one and has many variates, it constructs adversarial examples as follows:
+This method is the most widely used one and has many variates, it is intuitive since we want to make our model misclassify the input, we can update the input image follow the direction of the gradients of the loss with respect to the input image to maximize the loss, and this update is very fast because only one backprop is needed.it constructs adversarial examples as follows:
 $$
 \boldsymbol{x}^{adv}=\boldsymbol{x}+\epsilon \cdot \operatorname{sign}\left(\nabla_{\boldsymbol{x}} J(\boldsymbol{x}, y)\right)
 $$
 where $\epsilon$ is the magnitude of the perturbation, FGSM meets the $L_{\infty}$ norm bound $|\boldsymbol{x}^{adv}-\boldsymbol{x}| _ {\infty} \leq \epsilon$.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;FGSM is intuitive since we want to make our model misclassify the input, we can update the input image towards the gradients of the loss with respect to the input image to maximize the loss, and this update is very fast because only one backprop is needed.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://github.com/hustwutao/Tutorial-for-adversarial-examples/blob/master/FGSM.ipynb&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Demo for FGSM&lt;/a&gt;&lt;/p&gt;
 &lt;ol start=&#34;2&#34;&gt;
 &lt;li&gt;
-&lt;p&gt;Basic Iterative Method (BIM).
+&lt;p&gt;
+&lt;a href=&#34;https://arxiv.org/pdf/1607.02533.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Basic Iterative Method (BIM)&lt;/a&gt;.
 BIM extends FGSM by running for multiple iterations which can be expressed as:
 $$\boldsymbol{x} _ {0}^{adv}=\boldsymbol{x}, \quad \boldsymbol{x} _ {t+1} ^ {adv} = \boldsymbol{x} _ {t} ^ {adv} + \alpha \cdot \operatorname{sign}\left(\nabla _ {\boldsymbol{x}} J\left(\boldsymbol{x} _ {t}^{adv}, y\right)\right)$$
 To satisfy the $L_{\infty}$ bound, need to $\operatorname{set} \alpha=\epsilon / T$ with $T$ being the number of iterations.&lt;br&gt;

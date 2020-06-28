@@ -633,7 +633,7 @@
   <div class="article-container">
 
     <div class="article-style">
-      <p>As deep learning (DL) being applied in many safety-critical environments such as autonomous driving, healthcare and finance systems, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of our confidence in even state of the art DL models. In this post, I will briefly reviewing some representative attack and defense methods following 
+      <p>As deep learning (DL) being applied in many safety-critical environments such as autonomous driving, healthcare and finance systems, the reliability and rebustness of DL models are highly desired. However, the recent emergence of adversarial examples posed great concerns of our confidence in even state of the art DL models. In this post, we will briefly reviewing some representative attack and defense methods following 
 <a href="https://arxiv.org/pdf/1912.11852.pdf" target="_blank" rel="noopener">Dong, et al.</a></p>
 <p>An adversarial example is a sample of input data which has been modified very slightly in a way that the modifications are imperceptible to human but can easily fool DL models. The term was introduced in 
 <a href="https://arxiv.org/pdf/1312.6199.pdf" target="_blank" rel="noopener">Szegedy, et al.</a> in the context of neural networks for image classification, now people can apply adversarial attacks in other areas like object detection, semantic segmentation, speech recognition, deep reinforcement learning, natural language processing, and generative models, etc. Adversarial examples fall into the machine learning security field and have many interesting properties. In the following, we will discuss adversarial examples from four perspective: <strong>attack methods</strong>, <strong>defense methods</strong>, <strong>properties of adversarial examples</strong> and <strong>mechanism of adversarial examples</strong>.</p>
@@ -660,16 +660,18 @@
 <ol>
 <li>
 <a href="https://arxiv.org/pdf/1412.6572.pdf" target="_blank" rel="noopener">Fast Gradient Sign Method (FGSM)</a>.
-This method is the most widely used one and has many variates, it constructs adversarial examples as follows:
+This method is the most widely used one and has many variates, it is intuitive since we want to make our model misclassify the input, we can update the input image follow the direction of the gradients of the loss with respect to the input image to maximize the loss, and this update is very fast because only one backprop is needed.it constructs adversarial examples as follows:
 $$
 \boldsymbol{x}^{adv}=\boldsymbol{x}+\epsilon \cdot \operatorname{sign}\left(\nabla_{\boldsymbol{x}} J(\boldsymbol{x}, y)\right)
 $$
 where $\epsilon$ is the magnitude of the perturbation, FGSM meets the $L_{\infty}$ norm bound $|\boldsymbol{x}^{adv}-\boldsymbol{x}| _ {\infty} \leq \epsilon$.</li>
 </ol>
-<p>FGSM is intuitive since we want to make our model misclassify the input, we can update the input image towards the gradients of the loss with respect to the input image to maximize the loss, and this update is very fast because only one backprop is needed.</p>
+<p>
+<a href="https://github.com/hustwutao/Tutorial-for-adversarial-examples/blob/master/FGSM.ipynb" target="_blank" rel="noopener">Demo for FGSM</a></p>
 <ol start="2">
 <li>
-<p>Basic Iterative Method (BIM).
+<p>
+<a href="https://arxiv.org/pdf/1607.02533.pdf" target="_blank" rel="noopener">Basic Iterative Method (BIM)</a>.
 BIM extends FGSM by running for multiple iterations which can be expressed as:
 $$\boldsymbol{x} _ {0}^{adv}=\boldsymbol{x}, \quad \boldsymbol{x} _ {t+1} ^ {adv} = \boldsymbol{x} _ {t} ^ {adv} + \alpha \cdot \operatorname{sign}\left(\nabla _ {\boldsymbol{x}} J\left(\boldsymbol{x} _ {t}^{adv}, y\right)\right)$$
 To satisfy the $L_{\infty}$ bound, need to $\operatorname{set} \alpha=\epsilon / T$ with $T$ being the number of iterations.<br>
