@@ -118,5 +118,5 @@ social:
 highlight_name: true
 ---
 
-Tao Wu received the Bachelor degree from [Huazhong University of Science and Technology](http://english.hust.edu.cn/), Wuhan, China, in 2018. He is currently pursuing the Ph.D. degree in the department of Computer Science, [Missouri University of  Science and Technology](https://www.mst.edu/) under the co-supervision of [Dr. Donald C. Wunsch](https://ece.mst.edu/faculty-directory/donald-wunsch/) and [Dr. Tie Luo](https://tluocs.github.io/). His current research interests include computer vision, self-supervised learning, optimization and adversarial machine learning.
+Tao Wu received the Bachelor degree from [Huazhong University of Science and Technology](http://english.hust.edu.cn/), Wuhan, China, in 2018. He is currently pursuing the Ph.D. degree in the department of Computer Science, [Missouri University of  Science and Technology](https://www.mst.edu/) under the co-supervision of [Dr. Donald C. Wunsch II](https://ece.mst.edu/faculty-directory/donald-wunsch/) and [Dr. Tie Luo](https://tluocs.github.io/). His current research interests include computer vision, self-supervised learning, optimization and adversarial machine learning.
 {style="text-align: justify;"}
