@@ -9,7 +9,7 @@ appearance:
   theme_day: minimal
   theme_night: minimal
   font: minimal
-  font_size: L
+  font_size: M
 
 # SEO
 
@@ -45,7 +45,7 @@ header:
 
 footer:
   copyright:
-    notice: '© {2024} Tao Wu'
+    notice: '2024 Tao Wu'
     license:
       enable: true
       allow_derivatives: false
