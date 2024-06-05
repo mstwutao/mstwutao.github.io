@@ -14,7 +14,7 @@ main:
     url: /#news
     weight: 3
   - name: Certificates
-    url: /#certificates
+    url: certificates/
     weight: 11
   - name: Papers
     url: /#papers
