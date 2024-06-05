@@ -7,9 +7,9 @@ main:
   - name: Bio
     url: /
     weight: 1
-  # - name: Experience
-  #   url: experience/
-  #   weight: 2
+  - name: Experience
+    url: experience/
+    weight: 2
   - name: News
     url: /#news
     weight: 3
