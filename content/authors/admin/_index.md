@@ -66,8 +66,8 @@ education:
     institution: Huazhong University of Science and Technology
     date_start: 2014-08-01
     date_end: 2018-06-31
-    summary: |
-      GPA: 3.78/4.0
+    # summary: |
+    #   GPA: 3.78/4.0
       
       # Courses included:
       # - lorem ipsum dolor sit amet, consectetur adipiscing elit
@@ -91,8 +91,8 @@ work:
     company_logo: ''
     date_start: 2018-08-01
     date_end: 2021-05-31
-    summary: |
-      Research scope including computer vision, adversarial robustness, clustering and self-supervised learning.
+    # summary: |
+    #   Research scope including computer vision, adversarial robustness, clustering and self-supervised learning.
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
