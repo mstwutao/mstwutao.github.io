@@ -24,11 +24,11 @@ sections:
         color: white
         image:
           # Add your image background to `assets/media/`.
-          filename:  mountains.jpg
+          filename:  #mountains.jpg
           filters:
             brightness: 1.0
           size: actual
-          position: left
+          position: center
           parallax: false
   # - block: markdown
   #   content:
