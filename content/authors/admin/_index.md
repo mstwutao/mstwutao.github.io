@@ -72,10 +72,10 @@ work:
   - position: Graduate Teaching Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
-    company_logo: 'mst-new'
+    company_logo: ''
     date_start: 2021-06-01
     date_end: 2024-06-01
-    summary: |2-
+    summary: |
       Responsibilities include:
       - Fall 2021. **CS1982 Matlab Programming** 
       - Spring 2022. **CS1982 Matlab Programming**
@@ -86,7 +86,7 @@ work:
   - position: Graduate Research Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
-    company_logo: mst-new
+    company_logo: ''
     date_start: 2018-08-01
     date_end: 2021-05-31
     summary: |
