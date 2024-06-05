@@ -30,21 +30,21 @@ organizations:
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
-  - icon: at-symbol
-    url: 'mailto:your-email@example.com'
-    label: E-mail Me
-  - icon: brands/x
-    url: https://twitter.com/GetResearchDev
-  - icon: brands/instagram
-    url: https://www.instagram.com/
+  # - icon: at-symbol
+  #   url: 'mailto:your-email@example.com'
+  #   label: E-mail Me
+  # - icon: brands/x
+  #   url: https://twitter.com/GetResearchDev
+  # - icon: brands/instagram
+  #   url: https://www.instagram.com/
   - icon: brands/github
-    url: https://github.com/gcushen
+    url: https://github.com/mstwutao
   - icon: brands/linkedin
-    url: https://www.linkedin.com/
+    url: https://www.linkedin.com/in/mstwutao/
   - icon: academicons/google-scholar
-    url: https://scholar.google.com/
-  - icon: academicons/orcid
-    url: https://orcid.org/
+    url: https://scholar.google.co.uk/citations?user=KS0Q4oEAAAAJ&hl=en
+  # - icon: academicons/orcid
+  #   url: https://orcid.org/
 
 interests:
   - Artificial Intelligence
@@ -183,4 +183,5 @@ awards:
 
 ## About Me
 
-Chien Shiung Wu is a professor of artificial intelligence at the Stanford AI Lab. Her research interests include distributed robotics, mobile computing and programmable matter. She leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
+I received the bachelor degree in Engineering Mechanics from [Huazhong University of Science and Technology](http://english.hust.edu.cn/), Wuhan, China in 2018. I'm currently pursuing the Ph.D. degree in Computer Science, [Missouri University of  Science and Technology](https://www.mst.edu/) under the co-supervision of [Dr. Donald C. Wunsch II](https://scholar.google.com/citations?hl=en&user=fQC7bIoAAAAJ&view_op=list_works) and [Dr. Tie Luo](https://tluocs.github.io/). My research interests include computer vision, optimization and adversarial machine learning. More sppecifically, in the realm of research, my focus lies in delving into modules that enhance the representation, optimization, generalization, and robustness of DNNs, drawing from both theoretical insights and empirical experimentation.
+{style="text-align: justify;"}
