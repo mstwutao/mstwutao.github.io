@@ -26,10 +26,10 @@ sections:
           # Add your image background to `assets/media/`.
           filename:  mountains.jpg
           filters:
-            brightness: 1.0
+            brightness: 0.5
           size: cover
-          position: bottom
-          parallax: false
+          position: right
+          parallax: true
   # - block: markdown
   #   content:
   #     title: '📚 My Research'
