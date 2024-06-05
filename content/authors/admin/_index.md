@@ -1,6 +1,6 @@
 ---
 # Display name
-title: 吳健雄
+title: Tao Wu
 
 # Name pronunciation (optional)
 name_pronunciation: Chien Shiung Wu
