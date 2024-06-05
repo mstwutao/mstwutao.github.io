@@ -72,7 +72,7 @@ work:
   - position: Graduate Teaching Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
-    company_logo: ''
+    company_logo: mst-new
     date_start: 2021-01-01
     date_end: ''
     summary: |2-
@@ -86,7 +86,7 @@ work:
   - position: Graduate Research Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
-    company_logo: ''
+    company_logo: mst-new
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
