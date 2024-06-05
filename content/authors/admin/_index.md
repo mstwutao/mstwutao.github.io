@@ -53,7 +53,7 @@ interests:
 
 education:
   - area: Ph.D. in Computer Science
-    institution: Missouri University of Science and Technology
+    institution: Missouri University of Science and Technology, Aug. 2018-Jun. 2024
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
@@ -73,7 +73,7 @@ education:
   #     - lorem ipsum dolor sit amet, consectetur adipiscing elit
   #     - lorem ipsum dolor sit amet, consectetur adipiscing elit
   - area: BS in Engineering Mechanics
-    institution: Huazhong University of Science and Technology
+    institution: Huazhong University of Science and Technology, Aug. 2014-Jun. 2028
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
