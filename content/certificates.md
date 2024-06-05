@@ -1,5 +1,5 @@
 ---
-title: My page
+title: 'Certificates'
 type: landing
 
 sections:
