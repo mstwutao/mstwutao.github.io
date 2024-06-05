@@ -47,13 +47,13 @@ profiles:
   #   url: https://orcid.org/
 
 interests:
-  - Artificial Intelligence
-  - Computational Linguistics
-  - Information Retrieval
+  - Bioinformatics
+  - Large Language Models
+  - Adversarial Machine Learning
 
 education:
-  - area: PhD Artificial Intelligence
-    institution: Stanford University
+  - area: Ph.D. in Computer Science
+    institution: Missouri University of Science and Technology
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
@@ -72,8 +72,8 @@ education:
       - lorem ipsum dolor sit amet, consectetur adipiscing elit
       - lorem ipsum dolor sit amet, consectetur adipiscing elit
       - lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - area: BSc Artificial Intelligence
-    institution: Massachusetts Institute of Technology
+  - area: BS in Engineering Mechanics
+    institution: Huazhong University of Science and Technology
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
