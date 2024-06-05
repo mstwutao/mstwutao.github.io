@@ -67,7 +67,6 @@ education:
     date_start: 2014-08-01
     date_end: 2018-06-31
     summary: |
-    #   GPA: 3.4/4.0
 work:
   - position: Director of Cloud Infrastructure
     company_name: GenCoin
