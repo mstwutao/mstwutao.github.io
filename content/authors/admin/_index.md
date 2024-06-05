@@ -55,8 +55,8 @@ interests:
 education:
   - area: Ph.D. in Computer Science
     institution: Missouri University of Science and Technology
-    date_start: 2016-01-01
-    date_end: 2020-12-31
+    date_start: 2018-08-01
+    date_end: 2024-06-31
     summary: |
     #   Thesis on _Why LLMs are awesome_. Supervised by [Prof Joe Smith](https://example.com). Presented papers at 5 IEEE conferences with the contributions being published in 2 Springer journals.
     # button:
@@ -64,10 +64,10 @@ education:
     #   url: 'https://example.com'
   - area: B.S. in Engineering Mechanics
     institution: Huazhong University of Science and Technology
-    date_start: 2016-01-01
-    date_end: 2020-12-31
+    date_start: 2014-08-01
+    date_end: 2018-06-31
     summary: |
-      # GPA: 3.4/4.0
+    #   GPA: 3.4/4.0
 work:
   - position: Director of Cloud Infrastructure
     company_name: GenCoin
