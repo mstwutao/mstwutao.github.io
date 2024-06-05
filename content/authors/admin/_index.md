@@ -73,8 +73,8 @@ work:
     company_name: Missouri University of Science and Technology
     company_url: ''
     company_logo: mst-new
-    date_start: 2021-01-01
-    date_end: ''
+    date_start: 2021-06-01
+    date_end: 2024-06-01
     summary: |2-
       Responsibilities include:
       - Fall 2021. **CS1982 Matlab Programming** 
@@ -87,8 +87,8 @@ work:
     company_name: Missouri University of Science and Technology
     company_url: ''
     company_logo: mst-new
-    date_start: 2016-01-01
-    date_end: 2020-12-31
+    date_start: 2018-08-01
+    date_end: 2021-05-31
     summary: |
       Research scope including computer vision, adversarial robustness, clustering and self-supervised learning.
 
