@@ -40,7 +40,7 @@ header:
 # Site footer
 footer:
   copyright:
-    notice: '© {year} Tao Wu. This work is licensed under {license}'
+    notice: '© {year} Tao Wu'
     license:
       enable: false
       allow_derivatives: false
