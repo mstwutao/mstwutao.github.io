@@ -48,12 +48,13 @@ profiles:
 
 interests:
   - Bioinformatics
+  - Medical Image Processing
   - Large Language Models
   - Adversarial Machine Learning
 
 education:
   - area: Ph.D. in Computer Science
-    institution: Missouri S&T, Aug. 2018 - Jun. 2024
+    institution: Missouri S&T, Jun. 2024
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
@@ -61,8 +62,8 @@ education:
     button:
       text: 'Read Thesis'
       url: 'https://example.com'
-  - area: BS in Engineering Mechanics
-    institution: HUST, Aug. 2014 - Jun. 2018
+  - area: B.S. in Engineering Mechanics
+    institution: HUST, Jun. 2018
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
