@@ -53,7 +53,7 @@ interests:
 
 education:
   - area: Ph.D. in Computer Science
-    institution: Missouri University of Science and Technology, Aug. 2018-Jun. 2024
+    institution: Missouri S&T, Aug. 2018 - Jun. 2024
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
@@ -61,19 +61,8 @@ education:
     button:
       text: 'Read Thesis'
       url: 'https://example.com'
-  # - area: MEng Artificial Intelligence
-  #   institution: Massachusetts Institute of Technology
-  #   date_start: 2016-01-01
-  #   date_end: 2020-12-31
-  #   summary: |
-  #     GPA: 3.8/4.0
-
-  #     Courses included:
-  #     - lorem ipsum dolor sit amet, consectetur adipiscing elit
-  #     - lorem ipsum dolor sit amet, consectetur adipiscing elit
-  #     - lorem ipsum dolor sit amet, consectetur adipiscing elit
   - area: BS in Engineering Mechanics
-    institution: Huazhong University of Science and Technology, Aug. 2014-Jun. 2028
+    institution: HUST, Aug. 2014 - Jun. 2018
     date_start: 2016-01-01
     date_end: 2020-12-31
     summary: |
