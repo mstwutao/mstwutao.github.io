@@ -28,7 +28,7 @@ sections:
           filters:
             brightness: 1.0
           size: actual
-          position: center
+          position: left
           parallax: false
   # - block: markdown
   #   content:
