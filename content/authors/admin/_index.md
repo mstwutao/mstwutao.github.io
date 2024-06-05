@@ -86,7 +86,7 @@ work:
   - position: Graduate Research Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
-    company_logo: 'mst-new'
+    company_logo: mst-new
     date_start: 2018-08-01
     date_end: 2021-05-31
     summary: |
