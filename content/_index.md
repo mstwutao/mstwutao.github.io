@@ -30,7 +30,6 @@ sections:
           size: actual
           position: center
           parallax: false
-
   # - block: markdown
   #   content:
   #     title: '📚 My Research'
@@ -43,7 +42,6 @@ sections:
   #       Please reach out to collaborate 😃
   #   design:
   #     columns: '1'
-  
   - block: collection
     id: news
     content:
@@ -73,7 +71,6 @@ sections:
       # Reduce spacing
       spacing:
         padding: [0, 0, 0, 0]
-
   - block: collection
     id: papers
     content:
@@ -105,7 +102,6 @@ sections:
     design:
       view: article-grid
       columns: 1
-
   # - block: cta-card
   #   demo: true # Only display this section in the Hugo Blox Builder demo site
   #   content:
