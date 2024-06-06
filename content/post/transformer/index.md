@@ -30,7 +30,7 @@ The Transformer architecture was first proposed in the paper "[Attention is All 
 ### Models
 Here we dissect The Transformer into 6 separate parts and will dedicate a section to each part. In the end we will assemble these sections together to build the Transformer for solving the machine translation task.
 
-before we move further, we can setup a config file for the hyper parameters of our transformer model:
+Before we move further, we can setup a config file for the hyper parameters of our transformer model:
 
 ```python
 import torch
@@ -54,7 +54,7 @@ class Config:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ```
 
-> **1. Tokenization**
+> 1. Tokenization
 
 Tokenization is a process which involves splitting input into smaller units, thereby facilitates representation learning and model training. Depend on the modality of input, tokenization have different forms, such as dividing images into smaller patches, converting audio signals into spectrograms, or breaking genome sequences into k-mers. Here we take text tokenization to explain it.
 
