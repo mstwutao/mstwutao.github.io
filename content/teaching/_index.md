@@ -14,6 +14,7 @@ sections:
     id: teaching
     content:
       title: Teaching
+      count: 0
       filters:
         folders:
           - teaching
