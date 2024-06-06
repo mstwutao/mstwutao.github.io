@@ -10,4 +10,4 @@ image:
 #   caption: 'Embed rich media such as videos and LaTeX math'
 ---
 
-{{% staticref "uploads/resume.pdf" "newtab" %}}Download my CV{{% /staticref %}}
+![Syllabus](uploads/resume.pdf)
