@@ -36,5 +36,5 @@ sections:
       sort_ascending: false
     design:
       # Choose a listing view
-      view: card
+      view: article-grid
 ---
