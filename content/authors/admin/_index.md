@@ -138,15 +138,25 @@ languages:
 #   Only `title`, `awarder`, and `date` are required.
 #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
 awards:
+  - title: 'Foundations of Project Management'
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/P3C5DK7LFC9J
+    date: '2024-05-21'
+    awarder: coursera
+    icon: coursera  
+  - title: 'Google Cloud Fundamentals: Core Infrastructure'
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/VT4XXSX5DG29
+    date: '2024-05-21'
+    awarder: coursera
+    icon: coursera
   - title: 'AI for Medical Diagnosis'
     certificate_url: https://www.coursera.org/account/accomplishments/certificate/V4ULYM7R4RK2
     date: '2023-08-21'
-    awarder: Coursera
+    awarder: coursera
     icon: coursera
   - title: 'AWS Cloud Technical Essentials'
     certificate_url: https://www.coursera.org/account/accomplishments/certificate/DPDC9RH8VRMT
     date: '2023-07-21'
-    awarder: Coursera
+    awarder: coursera
     icon: coursera
   - title: 'Image and Video Processing'
     certificate_url: https://www.coursera.org/account/accomplishments/certificate/6WE6SPRZCZTQ
