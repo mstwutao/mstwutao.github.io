@@ -139,12 +139,12 @@ languages:
 #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
 awards:
   - title: 'AI for Medical Diagnosis'
-    url: https://www.coursera.org/account/accomplishments/certificate/V4ULYM7R4RK2
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/V4ULYM7R4RK2
     date: '2023-08-21'
     awarder: Coursera
     icon: coursera
   - title: 'AWS Cloud Technical Essentials'
-    url: https://www.coursera.org/account/accomplishments/certificate/DPDC9RH8VRMT
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/DPDC9RH8VRMT
     date: '2023-07-21'
     awarder: Coursera
     icon: coursera
