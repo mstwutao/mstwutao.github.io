@@ -163,6 +163,16 @@ awards:
     date: '2023-07-21'
     awarder: coursera
     icon: coursera
+  - title: 'Advanced Computer Vision with TensorFlow'
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/NJQ7EW6JE9T7
+    date: '2023-06-21'
+    awarder: coursera
+    icon: coursera
+  - title: 'Advanced Learning Algorithms'
+    certificate_url: https://www.coursera.org/account/accomplishments/certificate/DM2LV2RRZR6L
+    date: '2023-06-21'
+    awarder: coursera
+    icon: coursera
 ---
 
 ## About Me
