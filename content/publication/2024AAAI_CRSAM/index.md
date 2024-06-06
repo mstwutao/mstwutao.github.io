@@ -35,7 +35,7 @@ abstract: The capacity to generalize to future unseen data stands as one of the 
 summary: AAAI Conference on Artificial Intelligence (AAAI)， 2024
 
 tags:
-  - Adversarial Examples
+  - Optimization
 
 # Display this page in the Featured widget?
 featured: true
