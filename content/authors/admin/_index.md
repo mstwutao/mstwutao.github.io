@@ -11,7 +11,7 @@ last_name: Wu
 
 # Status emoji
 status:
-  icon: ☕️
+  icon: #☕️
 
 # Is this the primary user of the site?
 superuser: true
@@ -30,8 +30,8 @@ organizations:
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
-  # - icon: at-symbol
-  #   url: 'mailto:your-email@example.com'
+  - icon: at-symbol
+    url: 'wuta@mst.edu'
   #   label: E-mail Me
   # - icon: brands/x
   #   url: https://twitter.com/GetResearchDev
