@@ -17,3 +17,5 @@ date: 2023-06-21
 #   - Hugo Blox
 #   - Markdown
 ---
+
+Our paper [GNP Attack: Transferable Adversarial Examples via Gradient Norm Penalty](https://arxiv.org/pdf/2307.04099) has been accepted by International Conference of Image Processing 2023!
