@@ -16,8 +16,8 @@ main:
   - name: Certificates
     url: certificates/
     weight: 4
-  - name: Papers
-    url: papers/
+  - name: Publication
+    url: publication/
     weight: 11
   - name: Posts
     url: posts/

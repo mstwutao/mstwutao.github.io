@@ -10,13 +10,13 @@ design:
 # Page sections
 sections:
   - block: collection
-    id: papers
+    id: publication
     content:
-      title: Publications
+      title: Publication
       filters:
         folders:
           - publication
-        featured_only: true
+        featured_only: false
     design:
       view: article-grid
       columns: 2
