@@ -10,9 +10,9 @@ design:
 # Page sections
 sections:
   - block: collection
-    id: publication
+    id: publications
     content:
-      title: Publication
+      title: Publications
       filters:
         folders:
           - publication

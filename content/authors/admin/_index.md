@@ -149,7 +149,6 @@ awards:
     awarder: Coursera
     icon: coursera
   - title: 'Image and Video Processing'
-    url: https://www.coursera.org/account/accomplishments/certificate/6WE6SPRZCZTQ
     certificate_url: https://www.coursera.org/account/accomplishments/certificate/6WE6SPRZCZTQ
     date: '2023-07-21'
     awarder: coursera
