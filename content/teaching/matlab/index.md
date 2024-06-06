@@ -10,4 +10,4 @@ image:
 #   caption: 'Embed rich media such as videos and LaTeX math'
 ---
 
-![Syllabus](syllabus.pdf)
+<!-- ![Syllabus](syllabus.pdf) -->
