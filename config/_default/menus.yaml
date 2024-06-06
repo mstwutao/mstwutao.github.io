@@ -15,14 +15,11 @@ main:
     weight: 3
   - name: Certificates
     url: certificates/
-    weight: 11
+    weight: 4
   - name: Papers
     url: /#papers
     weight: 11
-  - name: Talks
-    url: /#talks
-    weight: 12
-  - name: Post
+  - name: Posts
     url: post/
     weight: 25
   - name: Projects
