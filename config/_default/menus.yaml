@@ -20,7 +20,7 @@ main:
     url: /#papers
     weight: 11
   - name: Posts
-    url: post/
+    url: posts/
     weight: 25
   - name: Projects
     url: projects/
