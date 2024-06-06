@@ -32,7 +32,9 @@ Here we dissect The Transformer into 6 separate parts and will dedicate a sectio
 
 > **Tokenization**
 
-Tokenization is the first step for our task which refers to the process of breaking down a text or a sequence of characters into smaller units called tokens, tokens are atomic units used as input to the Transformer model. These tokens could be words, subwords, characters, or even phrases, depending on the granularity of the tokenization strategy. 
+Tokenization is a process which involves splitting input into smaller units, thereby facilitates representation learning and model training. Depend on the modality of input, tokenization have different forms, such as dividing images into smaller patches, converting audio signals into spectrograms, or breaking genome sequences into k-mers. Here we take text tokenization to explain it.
+
+For NLP tasks, tokenization is often the first step for the task which refers to the process of breaking down a text or a sequence of characters into smaller units called tokens, tokens are atomic units used as input to the Transformer model. These tokens could be words, subwords, characters, or even phrases, depending on the granularity of the tokenization strategy. 
 
 Start with a piece of text that you want to process using a Transformer model. This could be a sentence, a paragraph, or even an entire document. The process of tokenization is roughly as follows:
 
@@ -118,3 +120,79 @@ def en_preprocess(en_sentence):
     return tokens, ids
 
 ```
+We can obtain the size of vocabulary:
+
+```python
+print('de vocab size:', len(de_vocab))
+print('en vocab size:', len(en_vocab))
+
+>> de vocab size: 19214
+>> en vocab size: 10837
+```
+
+See an token example:
+```python
+de_sentence, en_sentence = train_dataset[0]
+print('de preprocess:', *de_preprocess(de_sentence))
+print('en preprocess:', *en_preprocess(en_sentence))
+
+>> de preprocess: ['<bos>', 'Zwei', 'junge', 'weiße', 'Männer', 'sind', 'im', 'Freien', 'in', 'der', 'Nähe', 'vieler', 'Büsche', '.', '<eos>'] [2, 21, 85, 257, 31, 87, 22, 94, 7, 16, 112, 7910, 3209, 4, 3]
+>> en preprocess: ['<bos>', 'Two', 'young', ',', 'White', 'males', 'are', 'outside', 'near', 'many', 'bushes', '.', '<eos>'] [2, 19, 25, 15, 1169, 808, 17, 57, 84, 336, 1339, 5, 3]
+```
+
+> **Positional Encoding** 
+
+In traditional sequence models like RNNs or LSTMs, the order of elements in a sequence is inherently maintained due to the sequential nature of their processing. However, transformers operate in a parallel and non-sequential manner, this parallelism allows transformers to be highly efficient, but it also means that the model lacks the inherent understanding of element positions. To overcome this, positional encodings are added to the input embeddings. Positional encoding is a crucial concept within transformer architectures, ensuring that sequence information is preserved and understood by the model.
+
+Imagine you're translating the sentence "I love dogs" to another language. In a traditional sequence model, the model would process each word one after another, naturally grasping their order. In transformers, without positional encoding, the model might see "I dogs love," disrupting the meaning entirely.
+
+Positional encoding is a technique used to inject information about the position of elements in a sequence into the transformer model. It involves adding unique positional embeddings to the input embeddings of each element. Positional embeddings are essentially fixed vectors associated with each position in the sequence. These vectors are added to the word embeddings before they're input to the transformer layers. By doing this, the model can differentiate between elements based on both their content (semantic meaning) and their position in the sequence.
+
+Positional encoding is often represented using trigonometric functions, specifically sine and cosine functions. This choice ensures that the positional embeddings can capture different frequencies and positions without repetition.
+
+```python
+class EmbeddingWithPosition(nn.Module):
+
+    def __init__(self, args, vocab_size, dropout=0.1):
+        super().__init__()
+        self.seq_emb = nn.Embedding(vocab_size, args.d_model)
+        position_idx = torch.arange(0, args.max_seq_len).unsqueeze(-1)
+        position_emb_fill = position_idx * torch.exp(
+            -torch.arange(0, args.d_model, 2) * math.log(10000.0) / args.d_model)
+        pos_encoding = torch.zeros(args.max_seq_len, args.d_model)
+        pos_encoding[:, 0::2] = torch.sin(position_emb_fill)
+        pos_encoding[:, 1::2] = torch.cos(position_emb_fill)
+        self.register_buffer('pos_encoding', pos_encoding)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):  # x: (batch_size, seq_len)
+        x = self.seq_emb(x)  # x: (batch_size, seq_len, d_model)
+        x = x + self.pos_encoding.unsqueeze(0)[:, :x.size()[1], :]
+        return self.dropout(x)
+```
+
+see a embedding example:
+
+```python
+from dataset import de_preprocess, de_vocab, train_dataset
+
+emb = EmbeddingWithPosition(Config, len(de_vocab))
+de_tokens, de_ids = de_preprocess(train_dataset[0][0])
+de_ids_tensor = torch.tensor(de_ids, dtype=torch.long).unsqueeze(0)
+emb_result = emb(de_ids_tensor)
+print('de_tensor_size:', de_ids_tensor.size(), 'emb_size:', emb_result.size())
+
+>> de_tensor_size: torch.Size([1, 15]) emb_size: torch.Size([1, 15, 512])
+```
+
+> **Attention Mechanism**
+
+Unlike their predecessors, which relied on recurrent or convolutional layers, transformers introduce the concept of **self-attention**. This mechanism involves comparing each word's importance to the other words in the same sentence. This attention score dictates how much emphasis the model places on each word while generating an output. This core mechanism has proven to be incredibly effective for processing sequential data, such as text.
+
+> **Transformer Architecture**
+
+The transformer architecture consists of an encoder and a decoder, each composed of multiple layers. The encoder processes the input text and converts it into a dense representation, while the decoder generates the output. What's fascinating is that each layer operates independently, allowing for parallelization and significantly speeding up training time.
+
+#### Pre-training and Fine-tuning
+One of the most significant advantages of transformers is their ability to be pre-trained on massive text corpora. During pre-training, models learn contextualized representations of words. Fine-tuning follows pre-training, where models are adapted to specific NLP tasks, such as text classification or machine translation. This two-step process not only speeds up training but also allows for transfer learning, where pre-trained models are fine-tuned on smaller datasets. Pre-trained models like BERT, GPT, and T5 have become the backbone of many NLP projects. Researchers and practitioners can fine-tune these models on specific tasks, achieving state-of-the-art performance even with limited labeled data.
+
