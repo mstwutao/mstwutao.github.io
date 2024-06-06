@@ -30,6 +30,30 @@ The Transformer architecture was first proposed in the paper "[Attention is All 
 ### Models
 Here we dissect The Transformer into 6 separate parts and will dedicate a section to each part. In the end we will assemble these sections together to build the Transformer for solving the machine translation task.
 
+before we move further, we can setup a config file for the hyper parameters of our transformer model:
+
+```python
+import torch
+from dataclasses import dataclass
+
+@dataclass
+class Config:
+    max_seq_len = 2048
+    d_model = 512
+    hidden_dim = 2048
+    n_layers = 6
+    n_heads = 8
+    d_qk = d_v = 64
+
+    epochs = 300
+    batch_size = 32
+    
+    UNK_IDX, PAD_IDX, BOS_IDX, EOS_IDX = 0, 1, 2, 3
+    UNK_SYM, PAD_SYM, BOS_SYM, EOS_SYM = '<unk>', '<pad>', '<bos>', '<eos>'
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+```
+
 > **1. Tokenization**
 
 Tokenization is a process which involves splitting input into smaller units, thereby facilitates representation learning and model training. Depend on the modality of input, tokenization have different forms, such as dividing images into smaller patches, converting audio signals into spectrograms, or breaking genome sequences into k-mers. Here we take text tokenization to explain it.
@@ -108,59 +132,54 @@ from torchtext.vocab import build_vocab_from_iterator
 
 from config import Config
 
-train_dataset = list(Multi30k(split='train', language_pair=('de', 'en')))
+class Tokenizer:
+    def __init__(self):
+        self.train_dataset = list(Multi30k(split='train', language_pair=('de', 'en')))
+        self.de_tokenizer = get_tokenizer('spacy', language='de_core_news_sm')
+        self.en_tokenizer = get_tokenizer('spacy', language='en_core_web_sm')
+        self.build_vocab()
 
-de_tokenizer = get_tokenizer('spacy', language='de_core_news_sm')
-en_tokenizer = get_tokenizer('spacy', language='en_core_web_sm')
+    def build_vocab(self):
+        de_tokens, en_tokens = [], []
+        for de_sentence, en_sentence in self.train_dataset:
+            de_tokens.append(self.de_tokenizer(de_sentence))
+            en_tokens.append(self.en_tokenizer(en_sentence))
 
-de_tokens, en_tokens = [], []
-for de_sentence, en_sentence in train_dataset:
-    de_tokens.append(de_tokenizer(de_sentence))
-    en_tokens.append(en_tokenizer(en_sentence))
+        self.de_vocab = build_vocab_from_iterator(
+            iterator=de_tokens,
+            specials=[Config.UNK_SYM, Config.PAD_SYM, Config.BOS_SYM, Config.EOS_SYM],
+            special_first=True)
+        self.de_vocab.set_default_index(Config.UNK_IDX)
 
-de_vocab = build_vocab_from_iterator(
-    de_tokens,
-    specials=[Config.UNK_SYM, Config.PAD_SYM, Config.BOS_SYM, Config.EOS_SYM],
-    special_first=True)
-de_vocab.set_default_index(Config.UNK_IDX)
+        self.en_vocab = build_vocab_from_iterator(
+            iterator=en_tokens,
+            specials=[Config.UNK_SYM, Config.PAD_SYM, Config.BOS_SYM, Config.EOS_SYM],
+            special_first=True)
+        self.en_vocab.set_default_index(Config.UNK_IDX)
 
-en_vocab = build_vocab_from_iterator(
-    en_tokens,
-    specials=[Config.UNK_SYM, Config.PAD_SYM, Config.BOS_SYM, Config.EOS_SYM],
-    special_first=True)
-en_vocab.set_default_index(Config.UNK_IDX)
+    def encode(self, inputs, language='de'):
+        if language == 'de':
+            tokens = self.de_tokenizer(inputs)
+            token_ids = self.de_vocab(tokens)
+        elif language == 'en':
+            tokens = self.en_tokenizer(inputs)
+            token_ids = self.en_vocab(tokens)           
+        token_ids = [Config.BOS_IDX] + token_ids + [Config.EOS_IDX]
+        return token_ids
 
-def de_preprocess(de_sentence):
-    tokens = de_tokenizer(de_sentence)
-    tokens = [Config.BOS_SYM] + tokens + [Config.EOS_SYM]
-    ids = de_vocab(tokens)
-    return tokens, ids
-
-def en_preprocess(en_sentence):
-    tokens = en_tokenizer(en_sentence)
-    tokens = [Config.BOS_SYM] + tokens + [Config.EOS_SYM]
-    ids = en_vocab(tokens)
-    return tokens, ids
-
-```
-We can obtain the size of vocabulary:
-
-```python
-print('de vocab size:', len(de_vocab))
-print('en vocab size:', len(en_vocab))
-
->> de vocab size: 19214
->> en vocab size: 10837
 ```
 
 See an token example:
 ```python
-de_sentence, en_sentence = train_dataset[0]
-print('de preprocess:', *de_preprocess(de_sentence))
-print('en preprocess:', *en_preprocess(en_sentence))
+tokenizer = Tokenizer()
+de_sentence, en_sentence = tokenizer.train_dataset[0]
+de_ids = tokenizer.encode(de_sentence, 'de')
+en_ids = tokenizer.encode(en_sentence, 'en')
+print('de_ids', de_ids)
+print('en_ids', en_ids)
 
->> de preprocess: ['<bos>', 'Zwei', 'junge', 'weiße', 'Männer', 'sind', 'im', 'Freien', 'in', 'der', 'Nähe', 'vieler', 'Büsche', '.', '<eos>'] [2, 21, 85, 257, 31, 87, 22, 94, 7, 16, 112, 7910, 3209, 4, 3]
->> en preprocess: ['<bos>', 'Two', 'young', ',', 'White', 'males', 'are', 'outside', 'near', 'many', 'bushes', '.', '<eos>'] [2, 19, 25, 15, 1169, 808, 17, 57, 84, 336, 1339, 5, 3]
+>> de_ids [2, 21, 85, 257, 31, 87, 22, 94, 7, 16, 112, 7910, 3209, 4, 3]
+>> en_ids [2, 19, 25, 15, 1169, 808, 17, 57, 84, 336, 1339, 5, 3]
 ```
 
 > **Positional Encoding** 
