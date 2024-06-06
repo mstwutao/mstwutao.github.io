@@ -50,7 +50,7 @@ interests:
   - Bioinformatics
   - Medical Image Analysis
   - Large Language Models
-  - Adversarial Machine Learning
+  - Trustworthy AI
 
 education:
   - area: Ph.D. in Computer Science
@@ -178,5 +178,5 @@ awards:
 
 ## About Me
 
-I received the bachelor degree in Engineering Mechanics from [Huazhong University of Science and Technology](http://english.hust.edu.cn/), Wuhan, China in 2018. I'm currently pursuing the Ph.D. degree in Computer Science, [Missouri University of  Science and Technology](https://www.mst.edu/) under the co-supervision of [Dr. Donald C. Wunsch II](https://scholar.google.com/citations?hl=en&user=fQC7bIoAAAAJ&view_op=list_works) and [Dr. Tie Luo](https://tluocs.github.io/). My research interests include computer vision, bioinformatics, medical image analysis and adversarial machine learning. More specifically, my focus is on developing methods to enhance the representation, optimization, generalization, and robustness of deep neural networks (DNNs) and aim to apply the capabilities of DNNs to the analysis of genomic and medical data to advance human health.
+I received the bachelor degree in Engineering Mechanics from [Huazhong University of Science and Technology](http://english.hust.edu.cn/), Wuhan, China in 2018. I'm currently pursuing the Ph.D. degree in Computer Science, [Missouri University of  Science and Technology](https://www.mst.edu/) under the co-supervision of [Dr. Donald C. Wunsch II](https://scholar.google.com/citations?hl=en&user=fQC7bIoAAAAJ&view_op=list_works) and [Dr. Tie Luo](https://tluocs.github.io/). My research interests include computer vision, bioinformatics, medical image analysis and Trustworthy AI. More specifically, my focus is on developing methods to enhance the representation, optimization, generalization, and robustness of deep neural networks (DNNs) and aim to apply the capabilities of DNNs to the analysis of genomic and medical data to advance human health.
 {style="text-align: justify;"}
