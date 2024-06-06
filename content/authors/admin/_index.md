@@ -73,7 +73,7 @@ work:
     company_name: Missouri University of Science and Technology
     company_url: ''
     company_logo: ''
-    date_start: 2021-06-01
+    date_start: 2021-08-01
     date_end: 2024-06-01
     summary: |
       Courses taught:
@@ -88,7 +88,7 @@ work:
     company_url: ''
     company_logo: ''
     date_start: 2018-08-01
-    date_end: 2021-05-31
+    date_end: 2021-07-31
     summary: |
       Research scope including computer vision, adversarial examples, clustering and self-supervised learning.
 
