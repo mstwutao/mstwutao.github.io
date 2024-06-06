@@ -1,23 +1,21 @@
 ---
-title: 🧠 Sharpen your thinking with a second brain
-summary: Create a personal knowledge base and share your knowledge with your peers.
+title: The Annotated Transformer
+summary: Transformer architecture explained with minimal PyTorch implementation line-by-line.
 date: 2023-10-26
 authors:
   - admin
 tags:
-  - Second Brain
-  - Markdown
+  - Transformer
+  - LLM
 image:
-  caption: 'Image credit: [**Unsplash**](https://unsplash.com)'
+  caption: 'Image credit: [**https://arxiv.org/pdf/1706.03762.pdf**](https://arxiv.org/pdf/1706.03762.pdf)'
 ---
 
-Create a personal knowledge base and share your knowledge with your peers.
+In the ever-evolving landscape of Artificial Intelligence (AI), one architectual innovation stands out: **Transformer**. This powerful model has completely reshaped the way we approach tasks involving text, vision, audio, etc. In my mind, the biggest meaning of Transformer is that it paves the way for cross-domain applications and enabled advancements in multimodal learning, allowing us to tackle various problems by applying similar principles across different modalities.
 
-Hugo Blox web framework empowers you with one of the most flexible note-taking capabilities out there.
+In this blog post, we'll embark on a journey to understand what Transformer is, how it works and revolutionizes the AI world. To make our understanding concrete, we will build a Transformer from scratch to solve a English-German translation problem.
 
-Create a powerful knowledge base that works on top of a local folder of plain text Markdown files.
-
-Use it as your second brain, either publicly sharing your knowledge with your peers via your website, or via a private GitHub repository and password-protected site just for yourself.
+<!-- The essential equation of understanding is `understanding = intuition + math + codes`. -->
 
 ## Mindmaps
 
