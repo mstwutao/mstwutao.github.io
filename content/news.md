@@ -22,7 +22,7 @@ sections:
       # Filter on criteria
       filters:
         folders:
-          - post
+          - news
         author: ""
         category: ""
         tag: ""
