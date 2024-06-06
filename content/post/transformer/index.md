@@ -30,7 +30,7 @@ The Transformer architecture was first proposed in the paper "[Attention is All 
 ### Models
 Here we dissect The Transformer into 6 separate parts and will dedicate a section to each part. In the end we will assemble these sections together to build the Transformer for solving the machine translation task.
 
-> **Tokenization**
+> **1. Tokenization**
 
 Tokenization is a process which involves splitting input into smaller units, thereby facilitates representation learning and model training. Depend on the modality of input, tokenization have different forms, such as dividing images into smaller patches, converting audio signals into spectrograms, or breaking genome sequences into k-mers. Here we take text tokenization to explain it.
 
@@ -42,30 +42,51 @@ Start with a piece of text that you want to process using a Transformer model. T
 
 - Tokenization: Words are split into smaller units based on certain rules or algorithms. These units can be characters or subword pieces. We will specifically dive into this part in detail later.
 
-- Special Tokens: The tokenization process adds special tokens to the beginning and end of the token sequence. These special tokens include the `[CLS]` token (for classification tasks) and `[SEP]` token (to mark the end of a sentence or segment). For sequence-to-sequence tasks, an additional `[BOS]` (beginning of sequence) and `[EOS]` (end of sequence) token might be used.
+- Special Tokens: The tokenization process often involves adding special tokens to the start and end of a token sequence. These include the `[CLS]` token for classification tasks and the `[SEP]` token to denote the end of a sentence or segment. For sequence-to-sequence tasks, the `[BOS]` (beginning of sequence) and `[EOS]` (end of sequence) tokens are often used. Additionally, unknown tokens `[UNK]` and padding tokens `[PAD]` are incorporated as needed.
 
 - Vocabulary Building: A vocabulary is created by listing all unique subword tokens present in the text. Each token is then looked up in the model's vocabulary to obtain its corresponding index. The model's vocabulary contains a mapping of tokens to their unique IDs. 
 
 - Padding and Truncation: Transformer models require fixed-length input, so sequences might need to be padded with a special padding token `[PAD]` to match a certain length. Alternatively, if the sequence is too long, it might need to be truncated or discarded.
 
-- Attention Mask: An attention mask is generated to indicate which tokens are actual input `1` and which are padding tokens `0`. This helps the model ignore the padding tokens during computation.
+- Attention Mask: An attention mask is created to distinguish between actual input tokens and masked tokens, with `1` indicating the presence of input tokens and `0` indicating padding or subsequent tokens. This helps the model ignore the masked tokens during computation.
 
 There are three types of tokenization stratedies:
 
-1. Character-level tokenization
+1. Character/Byte level tokenization
 
-Character-level tokenization involves breaking down a text into individual characters. This form of tokenization treats each character as a separate token. For example, the sentence `"Hello, world!"` would be tokenized into `['H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!']`.
+Character/Byte level tokenization involves breaking down a text into individual characters. This form of tokenization treats each character as a separate token. The difference is that Byte tokenization encodes text characters into bytes using a character encoding scheme like UTF-8. For example, the character 'H' might be represented by the byte value 72 in ASCII encoding.
+
+```python
+# Character/Byte level tokenization
+
+text = "Hello, World!"
+char_tokens = list(text)
+print(char_tokens)
+
+>> ['H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', '!']
+```
+
+```python
+# Byte level tokenization
+
+text = "Hello, World!"
+byte_tokens = list(text.encode('utf-8'))
+print(byte_tokens)
+
+>> [72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33]
+```
+
 - Pro: Smaller vocabulary size (~26 characters)
-- Con: Longer sequences and more computationally expensive to process; Lose semantics of tokens.
+- Con: Result in longer sequences and more computationally expensive to process; Lose semantics of tokens.
 
-2. Word-level tokenization
+2. Word level tokenization
 
 Word-level tokenization involves breaking down a text into individual words. Each word is treated as a separate token, which makes it easier to analyze and process the text. For example, the sentence `"transformer is a language model developed by Google"`, word-level tokenization would result in the following tokens: `["transformer", "is", "a", "language", "model", "developed", "by", "Google"]`.
 
 - Pro: Captures the meaning of individual words
 - Con: Some words might have multiple meanings depending on the context, leading to ambiguity in analysis; Inflected forms (e.g., "running" vs. "run") can lead to different tokens; vocabulary is large and hard to contain rare words.
 
-3. Subword-level Tokenization
+3. Subword level Tokenization
 
 Subword tokenization, where words are broken down into smaller units known as subwords. This is particularly useful for handling out-of-vocabulary words and reducing the vocabulary size. For example, the sentence `"transformer transfer well"` might be tokenized into `["trans", "form", "f", "er", "well]`.
 
@@ -77,6 +98,8 @@ In modern Transformers, subword-level tokenization methods are mainstream becaus
 - Byte-Pair Encoding (BPE): BPE is a subword tokenization technique that splits words into subword units by iteratively merging the most frequent character pairs. It starts with a vocabulary of individual characters and then progressively merges pairs of characters based on their frequency in the training data. This process generates subword units that can represent both whole words and their parts. It's widely used in models like GPT-2 and GPT-3.
 
 - WordPiece Tokenization: WordPiece is a subword tokenization technique similar to BPE, but it's designed to handle languages with clearer word boundaries. WordPiece starts with a vocabulary of words and iteratively merges the most frequent word pieces. It's widely used in models like BERT and its variants.
+
+Tokenization is a field of ongoing research, but for our purposes, we rely on Spacy's tokenizer. Spacy employs a rule-based methodology to segment text into tokens, utilizing linguistic rules and heuristics to establish token boundaries within the text.
 
 ```python
 from torchtext.data.utils import get_tokenizer
