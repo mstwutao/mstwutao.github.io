@@ -22,7 +22,7 @@ sections:
       # Filter on criteria
       filters:
         folders:
-          - event
+          - post
         author: ""
         category: ""
         tag: ""
