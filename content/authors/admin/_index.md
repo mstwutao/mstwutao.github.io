@@ -76,6 +76,7 @@ work:
     date_start: 2021-06-01
     date_end: 2024-06-01
     summary: |
+      Courses taught:
       - Fall 2021. **CS1982 Matlab Programming** 
       - Spring 2022. **CS1982 Matlab Programming**
       - Summer 2022. **CS1970 Introduction to C++ Programming**
@@ -89,7 +90,7 @@ work:
     date_start: 2018-08-01
     date_end: 2021-05-31
     summary: |
-      Research scope including computer vision, adversarial robustness, clustering and self-supervised learning.
+      Research scope including computer vision, adversarial examples, clustering and self-supervised learning.
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
