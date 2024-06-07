@@ -22,9 +22,10 @@ p {
 }
 
 code {
+    font-size: 100px;
     font-family: monospace;
   }
-  
+
 .button {
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
