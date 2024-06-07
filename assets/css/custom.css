@@ -3,7 +3,6 @@
 
 /* Apply the fonts to the body and other elements */
 body {
-    font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
     margin-left: 0px;
     margin-right: 0px;
@@ -17,14 +16,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    font-family: 'Source Sans Pro', sans-serif;
     font-weight: 300;
     text-align: justify;
     font-size: 1rem;
 }
 
 code, pre {
-    font-family: 'Roboto Mono', monospace;
     font-size: 0.1rem;
 }
 
