@@ -171,13 +171,21 @@ class Tokenizer:
 
 See an token example:
 ```python
-tokenizer = Tokenizer()
-de_sentence, en_sentence = tokenizer.train_dataset[0]
-de_ids = tokenizer.encode(de_sentence, 'de')
-en_ids = tokenizer.encode(en_sentence, 'en')
-print('de_ids', de_ids)
-print('en_ids', en_ids)
+def test_Tokenizer():
+    tokenizer = Tokenizer()
+    print('de_vocab_size', tokenizer.de_vocab_size)
+    print('en_vocab_size', tokenizer.en_vocab_size)
 
+    de_sentence, en_sentence = tokenizer.train_dataset[0]
+    de_ids = tokenizer.encode(de_sentence, 'de')
+    en_ids = tokenizer.encode(en_sentence, 'en')
+    print('de_ids', de_ids)
+    print('en_ids', en_ids)
+    
+test_Tokenizer()
+
+>> de_vocab_size 19214
+>> en_vocab_size 10837
 >> de_ids [2, 21, 85, 257, 31, 87, 22, 94, 7, 16, 112, 7910, 3209, 4, 3]
 >> en_ids [2, 19, 25, 15, 1169, 808, 17, 57, 84, 336, 1339, 5, 3]
 ```
@@ -234,11 +242,50 @@ test_PositionalEmbedding()
 
 Unlike their predecessors, which relied on recurrent or convolutional layers, transformers introduce the concept of **self-attention**. This mechanism involves comparing each word's importance to the other words in the same sentence. This attention score dictates how much emphasis the model places on each word while generating an output. This core mechanism has proven to be incredibly effective for processing sequential data, such as text.
 
+```python
+class PositionalEmbedding(nn.Module):
+    def __init__(self, config, vocab_size, dropout=0.1):
+        super().__init__()
+        self.seq_emb = nn.Embedding(vocab_size, config.d_model)
+        pe = torch.zeros(config.max_seq_len, config.d_model)
+        position_idx = torch.arange(0, config.max_seq_len).unsqueeze(-1)
+        position_fill = position_idx * torch.exp(-torch.arange(0, config.d_model, 2) * math.log(10000.0) / config.d_model)
+        pe[:, 0::2] = torch.sin(position_fill)
+        pe[:, 1::2] = torch.cos(position_fill)
+        self.register_buffer('pe', pe)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):  
+        x = self.seq_emb(x) # x: (batch_size, seq_len, d_model)
+        x = x + self.pe.unsqueeze(0)[:, :x.size(1), :]
+        x = self.dropout(x)
+        return x
+```
+
+see a embedding example:
+
+```python
+def test_PositionalEmbedding():
+    from tokenizer import Tokenizer
+    emb = PositionalEmbedding(Config, de_vocab_size)
+    tokenizer = Tokenizer()
+    de_sentence, en_sentence = tokenizer.train_dataset[0]
+    de_ids = tokenizer.encode(de_sentence, 'de')
+    de_ids_tensor = torch.tensor(de_ids, dtype=torch.long).unsqueeze(0)
+    emb_result = emb(de_ids_tensor)
+    print('de_tensor_size:', de_ids_tensor.size(), 'emb_size:', emb_result.size())
+
+test_PositionalEmbedding()  
+
+>> de_tensor_size: torch.Size([1, 15]) emb_size: torch.Size([1, 15, 512])
+```
+
 > 4. Transformer Architecture
 
 The transformer architecture consists of an encoder and a decoder, each composed of multiple layers. The encoder processes the input text and converts it into a dense representation, while the decoder generates the output. What's fascinating is that each layer operates independently, allowing for parallelization and significantly speeding up training time.
 
 > 5. Training
+
 One of the most significant advantages of transformers is their ability to be pre-trained on massive text corpora. During pre-training, models learn contextualized representations of words. Fine-tuning follows pre-training, where models are adapted to specific NLP tasks, such as text classification or machine translation. This two-step process not only speeds up training but also allows for transfer learning, where pre-trained models are fine-tuned on smaller datasets. Pre-trained models like BERT, GPT, and T5 have become the backbone of many NLP projects. Researchers and practitioners can fine-tune these models on specific tasks, achieving state-of-the-art performance even with limited labeled data.
 
 > 6. Inference
