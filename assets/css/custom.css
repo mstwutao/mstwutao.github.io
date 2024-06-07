@@ -18,13 +18,8 @@ h1, h2, h3, h4, h5, h6 {
 p {
     font-weight: 300;
     text-align: justify;
-    font-size: 1rem;
+    font-size: 15px;
 }
-
-pre, code {
-    font-size: 100px;
-    font-family: 'SF Mono', 'Roboto Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  }
 
 .button {
     font-family: 'Source Sans Pro', sans-serif;
