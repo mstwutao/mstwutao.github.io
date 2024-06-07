@@ -21,12 +21,10 @@ p {
     font-size: 1rem;
 }
 
-code, pre {
+code {
     font-family: monospace;
-    background-color: #1e1e1e;
-    font-size: 5px;
-}
-
+  }
+  
 .button {
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 400;
