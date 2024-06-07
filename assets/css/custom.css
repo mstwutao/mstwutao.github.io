@@ -21,9 +21,9 @@ p {
     font-size: 1rem;
 }
 
-code {
+pre, code {
     font-size: 100px;
-    font-family: monospace;
+    font-family: 'SF Mono', 'Roboto Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   }
 
 .button {
