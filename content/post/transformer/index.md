@@ -7,8 +7,7 @@ authors:
 tags:
   - Transformer
   - LLM
-image:
-  caption: 'Image credit: [**https://arxiv.org/pdf/1706.03762.pdf**](https://arxiv.org/pdf/1706.03762.pdf)'
+
 ---
 
 In the ever-evolving landscape of Artificial Intelligence (AI), one architectual innovation stands out: **Transformer**. This powerful model has completely reshaped the way we approach tasks involving text, vision, audio, etc. In my mind, the biggest meaning of Transformer is that it paves the way for cross-domain applications and enabled advancements in multimodal learning, allowing us to tackle various problems by applying similar principles across different modalities.
