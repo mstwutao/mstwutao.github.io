@@ -31,6 +31,12 @@ code, pre {
 }
 
 
-.math {
-    font-size: 0.9em; /* Adjust this value to make the math font size smaller */
+/* Ensure that MathJax elements have smaller font size */
+.mjx-math {
+    font-size: 0.8em; /* Adjust this value as needed */
+}
+
+/* Ensure that KaTeX elements have smaller font size */
+.katex {
+    font-size: 0.8em; /* Adjust this value as needed */
 }
