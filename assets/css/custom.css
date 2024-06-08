@@ -33,9 +33,9 @@ code, pre {
 
 /* Ensure that MathJax elements have smaller font size */
 .mjx-math {
-    font-size: 0.95em; /* Adjust this value as needed */
+    font-size: 0.95em !important; 
 }
 
 .katex {
-    font-size: 1.1em !important; 
+    font-size: 0.95em !important; 
 }
