@@ -101,6 +101,7 @@ print(byte_tokens)
 ```
 
 - Pro: Smaller vocabulary size (~26 characters)
+
 - Con: Result in longer sequences and more computationally expensive to process; Lose semantics of tokens.
 
 2. Word level tokenization
@@ -108,6 +109,7 @@ print(byte_tokens)
 Word-level tokenization involves breaking down a text into individual words. Each word is treated as a separate token, which makes it easier to analyze and process the text. For example, the sentence `"transformer is a language model developed by Google"`, word-level tokenization would result in the following tokens: `["transformer", "is", "a", "language", "model", "developed", "by", "Google"]`.
 
 - Pro: Captures the meaning of individual words
+
 - Con: Some words might have multiple meanings depending on the context, leading to ambiguity in analysis; Inflected forms (e.g., "running" vs. "run") can lead to different tokens; vocabulary is large and hard to contain rare words.
 
 3. Subword level Tokenization
@@ -115,6 +117,7 @@ Word-level tokenization involves breaking down a text into individual words. Eac
 Subword tokenization, where words are broken down into smaller units known as subwords. This is particularly useful for handling out-of-vocabulary words and reducing the vocabulary size. For example, the sentence `"transformer transfer well"` might be tokenized into `["trans", "form", "f", "er", "well]`.
 
 - Pro: Subword tokenization can capture variations of words due to inflections, prefixes, and suffixes, which is important for languages with complex morphology; Can handle words that are not present in the vocabulary, allowing models to process rare or out-of-vocabulary terms.
+
 - Con: Subword tokenization often leads to a larger vocabulary compared to word-level tokenization; Some subword units might not carry clear semantic meaning on their own, leading to potential interpretation challenges.
 
 In modern Transformers, subword-level tokenization methods are mainstream because they offer benefits such as handling out-of-vocabulary words and capturing morphological variations. The two most common subword tokenization methods used in modern Transformers are:
