@@ -1,21 +1,4 @@
-.post {
-    margin: 0;  /* Adjust this value to make margins smaller */
-    font-size: 5px;
-}
-
-.post-content {
-    font-size: 5px;  /* Adjust this value to make font size smaller */
-}
-
-.post img {
-    display: block;
-    margin: 0.5rem auto;  /* Reduce the margin around images */
-    max-width: 50%;  /* Adjust this value to make the images smaller */
-    height: auto;  /* Ensure the image maintains its aspect ratio */
-}
-
-/* Adjust spacing for code blocks within posts */
-pre, code {
-    margin: 0.5rem 0;  /* Reduce the margin around code blocks */
-    font-size: 0.85rem;  /* Reduce the font size of code blocks */
+p {
+    font-size: 0.85rem;  /* Adjust this value to make paragraph font size smaller */
+    line-height: 1.5;  /* Adjust line height for better readability */
 }
