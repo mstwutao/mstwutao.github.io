@@ -35,7 +35,7 @@ header:
     show_search: true
     show_theme_chooser: true
     logo:
-      text: "Tao Wu (吴涛)"
+      text: "Tao Wu(吴涛)"
 
 # Site footer
 footer:

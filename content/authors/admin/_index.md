@@ -1,6 +1,6 @@
 ---
 # Display name
-title: Tao Wu
+title: Tao Wu (吴涛)
 
 # Name pronunciation (optional)
 name_pronunciation:
