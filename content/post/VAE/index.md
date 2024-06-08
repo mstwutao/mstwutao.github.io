@@ -13,6 +13,12 @@ tags:
 
 The Variational Autoencoder (VAE) is a probabilistic approach that extends the conventional autoencoder framework by introducing stochasticity in encoding and decoding processes, thus enabling the modeling of complex distributions of data. Originally derived from the principles of Variational Bayesian methods, the VAE framework was associated with autoencoders primarily because certain terms in its objective function could be interpreted analogously to the functions of an encoder and a decoder.
 
+{{< math >}}
+$$
+\gamma_{n} = \frac{ \left | \left (\mathbf x_{n} - \mathbf x_{n-1} \right )^T \left [\nabla F (\mathbf x_{n}) - \nabla F (\mathbf x_{n-1}) \right ] \right |}{\left \|\nabla F(\mathbf{x}_{n}) - \nabla F(\mathbf{x}_{n-1}) \right \|^2}
+$$
+{{< /math >}}
+
 To understand VAE thoroughly, let's begin by deriving its fundamental concepts and then proceed to implement it in Pytorch.
 
 As a type of generative model, VAE aims to capture the underlying distribution of a dataset, which may be intricate and unknown. A commonly used measure of distance between two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which quantifies the difference between them. 
