@@ -29,3 +29,8 @@ p {
 code, pre {
     font-size: 0.90rem !important;
 }
+
+
+.math {
+    font-size: 0.9em; /* Adjust this value to make the math font size smaller */
+}
