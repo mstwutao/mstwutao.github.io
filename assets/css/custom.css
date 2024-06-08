@@ -1,12 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Source+Sans+Pro:wght@200;300;400;700&display=swap');
+
 body {
     text-align: justify;
 }
 
-p {
+/* Font families */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+p, span, div {
+    font-family: 'Source Sans Pro', sans-serif;
     font-size: 1.1rem; 
 }
 
-/* Adjust font size for code blocks and inline code */
-pre, code {
-    font-size: 0.90rem !important;  /* Use !important to ensure this rule is applied */
+/* For monospace text */
+code, pre {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.90rem !important;
 }
