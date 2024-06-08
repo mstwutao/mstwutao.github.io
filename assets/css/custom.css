@@ -1,21 +1,18 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
-
-/* Basic Styling */
-body {
-    font-family: 'Source Sans Pro', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
+.post {
+    margin: 1rem auto;  /* Adjust this value to make margins smaller */
+    max-width: 1000px;  /* You can adjust this to control the max width of the content */
+    padding: 1rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', sans-serif;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
+.container {
+    margin: 0 auto;
+    padding: 0 1rem;  /* You can adjust this to change the padding inside the container */
 }
 
-p {
-    margin-bottom: 1.5rem;
+article {
+    margin-bottom: 1rem;  /* Reduce the bottom margin of articles */
 }
 
+article p {
+    margin-bottom: 1rem;  /* Reduce the bottom margin of paragraphs */
+}
