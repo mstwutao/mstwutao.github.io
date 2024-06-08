@@ -18,7 +18,7 @@ To understand VAE thoroughly, let's begin by deriving its fundamental concepts a
 As a type of generative model, VAE aims to capture the underlying distribution of a dataset, which may be intricate and unknown. A commonly used measure of distance between two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which quantifies the difference between them. 
 {{< math >}}
 $$
-\mathcal { D } _ { \mathrm { KL } } [ p ( x ) || q ( x ) ] = \mathbb { E } _ { p ( x ) } \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
+\mathcal{D}_{\mathrm{KL}}[p(x) || q(x)] = \mathbb{E}_{p(x)} \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
 $$
 {{< /math >}}
 *Note: the KL divergence is not symmetrical, we will explore their difference in later blogs*
