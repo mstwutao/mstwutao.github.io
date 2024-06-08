@@ -16,11 +16,9 @@ The Variational Autoencoder (VAE) is a probabilistic approach that extends the c
 To understand VAE thoroughly, let's begin by deriving its fundamental concepts and then proceed to implement it in Pytorch.
 
 As a type of generative model, VAE aims to capture the underlying distribution of a dataset, which may be intricate and unknown. A commonly used measure of distance between two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which quantifies the difference between them. 
-
 $$
 \mathcal { D } _ { \mathrm { KL } } [ p ( x ) || q ( x ) ] = \mathbb { E } _ { p ( x ) } \left[ \log \frac { p ( x ) } { q ( x ) }  \right]
 $$
-
 *Note: the KL divergence is not symmetrical, we will explore their difference in later blogs*
 
 So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.
