@@ -13,12 +13,6 @@ tags:
 
 The Variational Autoencoder (VAE) is a probabilistic approach that extends the conventional autoencoder framework by introducing stochasticity in encoding and decoding processes, thus enabling the modeling of complex distributions of data. Originally derived from the principles of Variational Bayesian methods, the VAE framework was associated with autoencoders primarily because certain terms in its objective function could be interpreted analogously to the functions of an encoder and a decoder.
 
-{{< math >}}
-$$
-\gamma_{n} = \frac{ \left | \left (\mathbf x_{n} - \mathbf x_{n-1} \right )^T \left [\nabla F (\mathbf x_{n}) - \nabla F (\mathbf x_{n-1}) \right ] \right |}{\left \|\nabla F(\mathbf{x}_{n}) - \nabla F(\mathbf{x}_{n-1}) \right \|^2}
-$$
-{{< /math >}}
-
 To understand VAE thoroughly, let's begin by deriving its fundamental concepts and then proceed to implement it in Pytorch.
 
 As a type of generative model, VAE aims to capture the underlying distribution of a dataset, which may be intricate and unknown. A commonly used measure of distance between two distributions $p(x)$ and $q(x)$ is the Kullback-Leibler (KL) divergence, which quantifies the difference between them. 
@@ -46,37 +40,36 @@ $$
 **Minimize the KL divergence of the data distribution and model distribution is equivalent to maximum likelihood method.**
 
 Now, let's see how we model and maximize the likelihood. VAE is a latent variable generative model which learns the distribution of data space $x \in \mathcal { X }$ from a latent space $z \in \mathcal { Z }$, we can define a prior of latent space $p(z)$, which is usually a standard normal distribution, then we can model the data distribution with a complex conditional distribution $p _ { \theta } ( x | z )$, so the model data likelihood can be computed as 
-
+{{< math >}}
 $$p _ { \theta } ( x ) = \int _ { z } p _ { \theta } ( x , z ) \mathrm { d } z = \int _ { z } p _ { \theta } ( x | z ) p ( z ) \mathrm { d } z$$
-
+{{< /math >}}
 However, direct maximization of the likelihood is intractable because the intergration. VAE instead optimizes a lower bound of $p _ { \theta } ( x )$, we can derive it using Jenson's Inequality: 
 
 
 If $f$ is a convex function and $X$ is a random variable, then 
-
+{{< math >}}
 $$
 E f ( X ) \geq f ( E X )
 $$
-
+{{< /math >}}
 the equality holds only when $X = E X$. In our case, 
-
+{{< math >}}
 $$
 \begin{align}
  \log p _ {\theta} ( x ) & = \log \int _ { z } p _ { \theta } ( x , z ) \mathrm { d } z  \\\\  & = \log \int _ { z } q _ { \phi } ( z | x )  [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \mathrm { d } z \\\\ & = \log \mathbb { E } _ { q _ { \phi } ( z | x) } [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}] \\\\ & \geq \mathbb { E } _ { q _ { \phi } ( z | x) } \log [ \frac{p _ { \theta } ( x , z )}{q _ { \phi } ( z | x )}]
 \end{align} 
 $$
-
+{{< /math >}}
 The last line of the derivation is called the **Evidence Lower BOund (ELBO)**, which is used frequently in Variational Inference. It seems confusing what is $q _ { \phi } ( z | x)$? Actually it is an approximate distribution of true posterior $p _ {\theta} ( z | x)$ of latent variable $z$ given datapoint $x$. Let's see where it comes from.
 
 The Variational Autoencoder (VAE) serves not only as a generative model but also as an instance of the Variational Inference family, utilized for inferring data initially. When presented with a raw datapoint $x$, the objective is to learn its representations $z$, encompassing attributes such as shape, size, category, etc. However, directly computing the posterior of latent variables, $p _ { \theta } ( z | x )$, is challenging due to the intractability of $p _ { \theta } ( x )$, as previously discussed. To address this, VAE introduces a recognition model, $q _ { \phi } (z|x)$, which approximates the true posterior, $p _ { \theta } ( z | x )$. The aim is to minimize the Kullback-Leibler (KL) divergence between these distributions.
-
-
+{{< math >}}
 $$
 \begin{align}
  \mathcal { D } _ { \mathrm { KL } } [ q _ { \phi } ( z | x ) || p _ {\theta} ( z | x ) ] & = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( z | x ) \right] \\\\                       & = \mathbb { E } _ { q _ { \phi } ( z | x ) } \left[ \log   q _ { \phi } ( z | x )  - \log  p _ {\theta} ( x | z ) - \log  p ( z ) \right] + \log p _ { \theta } ( x )  \\\\                                                                                        & = - \mathrm { ELBO } + \log p _ { \theta } ( x ) 
 \end{align}
 $$
-
+{{< /math >}}
 
 $\log p _ { \theta } (x)$ out of expectation because it does not depend on $z$, rearranging thte equation we obtain
 
