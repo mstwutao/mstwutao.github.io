@@ -63,7 +63,7 @@ education:
     #   text: 'Read Thesis'
     #   url: 'https://example.com'
   - area: B.S. in Engineering Mechanics
-    institution: Huazhong University of Science and Technology
+    institution:  <span style="font-size: 0.8rem;">Huazhong University of Science and Technology</span>
     date_start: 2014-08-01
     date_end: 2018-06-30
     summary: |
