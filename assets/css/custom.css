@@ -1,5 +1,6 @@
 .post {
     margin: 0;  /* Adjust this value to make margins smaller */
+    font-size: 5px;
 }
 
 .post-content {
