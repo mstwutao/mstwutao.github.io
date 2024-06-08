@@ -103,7 +103,7 @@ so $q\left(x_{t-1} \mid x_t, x_0\right)$ is also a Gussian and the denoising mat
 
 we obtain
 
-<span style="font-size:12px">
+<!-- <span style="font-size:12px">
 
 {{< math >}}
 $$
@@ -119,7 +119,7 @@ q\left({x}_{t-1} \mid {x}_t, {x}_0\right) & =\frac{q\left({x}_t \mid {x}_{t-1}, 
 $$
 {{< /math >}}
 
-</span>
+</span> -->
 
 Since {{< math >}}${\Sigma}_q(t)${{< /math >}} does not depend on the model parameters, so the objective of backward denoising process is to estimate the {{< math >}}$\mu_q\left({x}_t\right)${{< /math >}}, i.e., {{< math >}}${\mu}_\theta${{< /math >}} must predict {{< math >}}$\frac{1}{\sqrt{\alpha_t}}\left({x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}} {\epsilon}\right)${{< /math >}} given ${x}_t$, to make it simple, we make the model estimate $\epsilon$ for any time step, so the denoising matching term simplify to
 
