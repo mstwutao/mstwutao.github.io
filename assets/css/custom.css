@@ -15,7 +15,6 @@ html, body {
 
 body {
     margin: -0.5px; 
-    text-align: justify;
 }
 
 
@@ -23,6 +22,7 @@ p {
     margin: auto; 
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 1.1rem; 
+    text-align: justify;
 }
 
 /* For monospace text */
