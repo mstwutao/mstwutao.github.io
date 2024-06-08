@@ -3,13 +3,13 @@
 }
 
 .post-content {
-    font-size: 10px;  /* Adjust this value to make font size smaller */
+    font-size: 5px;  /* Adjust this value to make font size smaller */
 }
 
 .post img {
     display: block;
     margin: 0.5rem auto;  /* Reduce the margin around images */
-    max-width: 70%;  /* Adjust this value to make the images smaller */
+    max-width: 50%;  /* Adjust this value to make the images smaller */
     height: auto;  /* Ensure the image maintains its aspect ratio */
 }
 
