@@ -24,20 +24,20 @@ $$
 *Note: the KL divergence is not symmetrical, we will explore their difference in later blogs*
 
 So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.
-
+{{< math >}}
 $$
 \begin{align}
  \mathcal { D } _ { \mathrm { KL } } [ p_{data} ( x ) || p _ {\theta} ( x ) ] & = \mathbb { E } _ { x \sim p_{data} ( x ) } \left[ \log   p_{data} ( x )  - \log  p _ {\theta} ( x )  \right] \\\\                       & = - H [ p_{data} ( x ) ] - \mathbb { E } _ { x \sim p_{data} ( x ) } \left[ \log p _ {\theta} ( x ) \right] 
 \end{align}
 $$
-
+{{< /math >}}
 Note that $p _ {data} ( x )$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $p _ {data} ( x )$ is a constant, so
 
-
+{{< math >}}
 $$
 \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ p_{data} ( x ) || p _ {\theta} ( x ) ] = \max _ { \theta } \mathbb { E } _ { p_{data} ( x ) } \left[ \log p _ {\theta} ( x ) \right]
 $$
-
+{{< /math >}}
 **Minimize the KL divergence of the data distribution and model distribution is equivalent to maximum likelihood method.**
 
 Now, let's see how we model and maximize the likelihood. VAE is a latent variable generative model which learns the distribution of data space $x \in \mathcal { X }$ from a latent space $z \in \mathcal { Z }$, we can define a prior of latent space $p(z)$, which is usually a standard normal distribution, then we can model the data distribution with a complex conditional distribution $p _ { \theta } ( x | z )$, so the model data likelihood can be computed as 
