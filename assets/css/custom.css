@@ -1,14 +1,8 @@
 p {
-    font-size: 1.0rem; 
+    font-size: 1.1rem; 
 }
- 
 
 /* Adjust font size for code blocks and inline code */
-.post pre, .post code {
-    font-size: 0.75rem !important;  /* Use !important to ensure this rule is applied */
-}
-
-/* Additional specificity if necessary */
-.post article pre, .post article code {
-    font-size: 0.75rem !important;
+pre, code {
+    font-size: 0.95rem !important;  /* Use !important to ensure this rule is applied */
 }
