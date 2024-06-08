@@ -25,11 +25,11 @@ code, pre {
 }
 
 .text-sm {
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
 }
 
 
-/* .katex {
-    font-size: 1.0em !important; 
-} */
+.katex {
+    font-size: 1.1em !important; 
+}
 
