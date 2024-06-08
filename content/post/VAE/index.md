@@ -23,7 +23,7 @@ $$
 {{< /math >}}
 *Note: the KL divergence is not symmetrical, we will explore their difference in later blogs*
 
-So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution $p_{\theta}(x)$, where $\theta$ is the parameters of the model which we are trying to optimize.
+So now, a natural way to model the true data distribution is to minimize the KL divergence between the true data distribution $q(x)$ and the VAE model distribution {{< math >}}$p_{\theta}(x)${{< /math >}}, where {{< math >}}$\theta${{< /math >}} is the parameters of the model which we are trying to optimize.
 {{< math >}}
 $$
 \begin{align}
@@ -31,8 +31,7 @@ $$
 \end{align}
 $$
 {{< /math >}}
-Note that $p _ {data} ( x )$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $p _ {data} ( x )$ is a constant, so
-
+Note that $p_{data} ( x )$ is the underlying and unchanging distribution from which our dataset comes, so the entropy of $p _ {data} ( x )$ is a constant, so
 {{< math >}}
 $$
 \min _ { \theta } \mathcal { D } _ { \mathrm { KL } } [ p_{data} ( x ) || p _ {\theta} ( x ) ] = \max _ { \theta } \mathbb { E } _ { p_{data} ( x ) } \left[ \log p _ {\theta} ( x ) \right]
