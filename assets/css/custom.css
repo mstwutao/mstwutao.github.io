@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Source+Sans+Pro:wght@200;300;400;700&display=swap');
 
 * {
-    margin: 10px;
+    margin: -1px;
     padding: 0;
     box-sizing: border-box;
 }
@@ -14,7 +14,7 @@ html, body {
 
 
 body {
-    margin: auto; 
+    margin: -1px; 
     text-align: justify;
 }
 
