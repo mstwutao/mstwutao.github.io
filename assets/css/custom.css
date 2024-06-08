@@ -1,27 +1,7 @@
 .post {
-    margin: 1rem auto;  /* Adjust this value to make margins smaller */
-    max-width: 1000px;  /* You can adjust this to control the max width of the content */
-    padding: 1rem;
+    margin: 0;  /* Adjust this value to make margins smaller */
 }
 
-.container {
-    margin: 0 auto;
-    padding: 0 1rem;  /* You can adjust this to change the padding inside the container */
+.post-content {
+    font-size: 0.5rem;  /* Adjust this value to make font size smaller */
 }
-
-article {
-    margin-bottom: 1rem;  /* Reduce the bottom margin of articles */
-}
-
-article p {
-    margin-bottom: 1rem;  /* Reduce the bottom margin of paragraphs */
-}
-
-.language-python { border-left: 1px solid lightcoral; }
-
-.language-python + .language-plaintext {
-        border-left: 1px solid grey;
-        margin-left: 1rem !important;
-}
-.language-python + .language-plaintext code { background-color: white !important; }
-.language-python + .language-plaintext pre  { background-color: white !important; }
