@@ -1,5 +1,5 @@
 ---
-title: Variational Autoencoder
+title: Variational Autoencoder Explained
 summary: 
 date: 2023-08-01
 

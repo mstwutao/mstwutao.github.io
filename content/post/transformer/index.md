@@ -1,5 +1,5 @@
 ---
-title: The Annotated Transformer
+title: The Transformer Explained
 summary: Transformer architecture explained with minimal PyTorch implementation line-by-line.
 date: 2023-10-26
 
