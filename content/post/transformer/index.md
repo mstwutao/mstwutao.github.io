@@ -54,7 +54,7 @@ class Config:
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ```
 
-> 1. Tokenization
+- 1. Tokenization
 
 Tokenization is a process which involves splitting input into smaller units, thereby facilitates representation learning and model training. Depend on the modality of input, tokenization have different forms, such as dividing images into smaller patches, converting audio signals into spectrograms, or breaking genome sequences into k-mers. Here we take text tokenization to explain it.
 
@@ -193,7 +193,7 @@ test_Tokenizer()
 >> en_ids [2, 19, 25, 15, 1169, 808, 17, 57, 84, 336, 1339, 5, 3]
 ```
 
-> 2. Positional Encoding
+- 2. Positional Encoding
 
 In traditional sequence models like RNNs or LSTMs, the order of elements in a sequence is inherently maintained due to the sequential nature of their processing. However, transformers operate in a parallel and non-sequential manner, this parallelism allows transformers to be highly efficient, but it also means that the model lacks the inherent understanding of element positions. To overcome this, positional encodings are added to the input embeddings. Positional encoding is a crucial concept within transformer architectures, ensuring that sequence information is preserved and understood by the model.
 
@@ -241,7 +241,7 @@ test_PositionalEmbedding()
 >> de_tensor_size: torch.Size([1, 15]) emb_size: torch.Size([1, 15, 512])
 ```
 
-> 3. Attention Mechanism
+- 3. Attention Mechanism
 
 Unlike their predecessors, which relied on recurrent or convolutional layers, transformers introduce the concept of **self-attention**. This mechanism involves comparing each word's importance to the other words in the same sentence. This attention score dictates how much emphasis the model places on each word while generating an output. This core mechanism has proven to be incredibly effective for processing sequential data, such as text.
 
@@ -283,13 +283,13 @@ test_PositionalEmbedding()
 >> de_tensor_size: torch.Size([1, 15]) emb_size: torch.Size([1, 15, 512])
 ```
 
-> 4. Transformer Architecture
+- 4. Transformer Architecture
 
 The transformer architecture consists of an encoder and a decoder, each composed of multiple layers. The encoder processes the input text and converts it into a dense representation, while the decoder generates the output. What's fascinating is that each layer operates independently, allowing for parallelization and significantly speeding up training time.
 
-> 5. Training
+- 5. Training
 
 One of the most significant advantages of transformers is their ability to be pre-trained on massive text corpora. During pre-training, models learn contextualized representations of words. Fine-tuning follows pre-training, where models are adapted to specific NLP tasks, such as text classification or machine translation. This two-step process not only speeds up training but also allows for transfer learning, where pre-trained models are fine-tuned on smaller datasets. Pre-trained models like BERT, GPT, and T5 have become the backbone of many NLP projects. Researchers and practitioners can fine-tune these models on specific tasks, achieving state-of-the-art performance even with limited labeled data.
 
-> 6. Inference
+- 6. Inference
 
