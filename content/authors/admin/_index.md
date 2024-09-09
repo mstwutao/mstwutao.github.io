@@ -99,6 +99,14 @@ work:
     date_end: 2021-07-31
     summary: |
       Research scope including computer vision, adversarial machine learning and self-supervised learning.
+  - position: Summer Research Internship
+    company_name: Missouri University of Science and Technology
+    company_url: ''
+    company_logo: ''
+    date_start: 2017-07-01
+    date_end: 2017-10-01
+    summary: |
+      Analyze the training instability and mode collapse problems of Generative Adversarial Networks (GANs).
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`
