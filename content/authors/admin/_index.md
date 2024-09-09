@@ -47,10 +47,10 @@ profiles:
   #   url: https://orcid.org/
 
 interests:
+  - Computer Vision
+  - Large Language Models
   - Bioinformatics
   - Medical Image Analysis
-  - Large Language Models
-  - Trustworthy AI
 
 education:
   - area: Ph.D. in Computer Science
@@ -69,6 +69,14 @@ education:
     summary: |
 
 work:
+  - position: Postdoctoral Fellow
+    company_name: Missouri University of Science and Technology
+    company_url: ''
+    company_logo: ''
+    date_start: 2024-06-01
+    date_end: present
+    summary: |
+      Working on LLM for genomic data analysis and medical image analysis
   - position: Graduate Teaching Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
@@ -90,7 +98,7 @@ work:
     date_start: 2018-08-01
     date_end: 2021-07-31
     summary: |
-      Research scope including computer vision, adversarial examples, clustering and self-supervised learning.
+      Research scope including computer vision, adversarial machine learning and self-supervised learning.
 
 # Skills
 # Add your own SVG icons to `assets/media/icons/`

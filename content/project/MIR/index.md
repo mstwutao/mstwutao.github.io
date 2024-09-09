@@ -1,5 +1,5 @@
 ---
-title: ViLMorph, a Vision LSTM Framework for 3D Medical Image Analysis
+title: ViLMorph, a Vision LSTM Framework for 3D Medical Image Registration
 # date: 2024-08-01
 external_link: https://github.com/scikit-learn/scikit-learn
 tags:
