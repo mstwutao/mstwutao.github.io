@@ -85,12 +85,12 @@ work:
     date_end: 2024-06-01
     summary: |
       Courses taught:
-      - Fall 2021. **CS1982 Matlab Programming** 
-      - Spring 2022. **CS1982 Matlab Programming**
-      - Summer 2022. **CS1970 Introduction to C++ Programming**
-      - Fall 2022. **CS1982 Matlab Programming**
-      - Spring 2023. **CS1982 Matlab Programming**
-      - Spring 2024. **CS6405 Clustering Algorithms**
+      - Fall 2021. CS1982 Matlab Programming
+      - Spring 2022. CS1982 Matlab Programming
+      - Summer 2022. CS1970 Introduction to C++ Programming
+      - Fall 2022. CS1982 Matlab Programming
+      - Spring 2023. CS1982 Matlab Programming
+      - Spring 2024. CS6405 Clustering Algorithms
   - position: Graduate Research Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''
