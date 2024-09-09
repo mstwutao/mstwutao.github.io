@@ -74,7 +74,7 @@ work:
     company_url: ''
     company_logo: ''
     date_start: 2024-06-01
-    date_end: present
+    # date_end: present
     summary: |
       Working on LLM for genomic data analysis and medical image analysis
   - position: Graduate Teaching Assistant
