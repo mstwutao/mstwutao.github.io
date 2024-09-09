@@ -1,6 +1,6 @@
 ---
 title: Large Language Model for Understanding Genome Sequence
-date: 2024-06-01
+# date: 2024-06-01
 external_link: https://github.com/pytorch/pytorch
 tags:
   - LLM
