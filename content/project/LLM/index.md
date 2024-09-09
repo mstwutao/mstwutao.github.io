@@ -7,6 +7,6 @@ tags:
   - Bioinformatics
 ---
 
-Develop a genome LLM model based on \textbf{BERT} architecture and adopt masked language modeling as pretraining strategy.
+Develop a genome LLM model based on BERT architecture and adopt masked language modeling as pretraining strategy.
 
 <!--more-->

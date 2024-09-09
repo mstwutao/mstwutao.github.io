@@ -76,7 +76,7 @@ work:
     date_start: 2024-06-01
     # date_end: present
     summary: |
-      Working on LLM for genomic data analysis and medical image analysis
+      Working on LLM for genomic data analysis and medical image analysis.
   - position: Graduate Teaching Assistant
     company_name: Missouri University of Science and Technology
     company_url: ''

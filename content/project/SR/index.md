@@ -7,6 +7,6 @@ tags:
   - Low Level Vision
 ---
 
-Develop a Hyena based architecture to leverage its unique feature extraction capabilities to reconstruct high-frequency components, leading to more accurate and visually appealing super-resolution results.
+Develop a long convolution (Hyena) based architecture to leverage its unique feature extraction capabilities to reconstruct high-frequency details.
 
 <!--more-->
